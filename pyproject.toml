@@ -1,0 +1,9 @@
+[project]
+name = "weather"
+version = "0.1.0"
+description = "Fetch the weather prediction"
+authors =  [{name = "Lucas Bour", email = "lucas.bour@uha.fr"}]
+readme = "README.md"
+requires-python = ">=3.10"
+license =  {text = "BSD-3-Clause"}
+classifiers = ["Programming Language :: Python :: 3"]
