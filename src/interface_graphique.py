@@ -4,56 +4,72 @@ from tkinter import ttk
 # https://python.doctor/page-tkinter-interface-graphique-python-tutoriel
 # https://stackoverflow.com/questions/22925599/mouse-position-python-tkinter
 
+fenetre_principale = None
 
-
-
-# Définition de la classe
-class CreerBouton:
-
-    def __init__(self, name: str, parent): # Initialise la classe avec un parent (fenêtre).
-        self._name = name
-        self.parent = parent
-
-    def creer_bouton(self, texte, commande=None, largeur=20, hauteur=2, couleur_fond="blue", couleur_texte="white", police=("Arial", 12)):
+def creer_bouton(texte, commande=None, largeur=40, hauteur=2, couleur_fond="blue", couleur_texte="white", police=("Arial", 12)):
         
-        #Crée un bouton avec les paramètres spécifiés.
+    #Crée un bouton avec les paramètres spécifiés.
         
-        bouton = Button(
-            self.parent,
-            text=texte,
-            command=commande,
-            background=couleur_fond,
-            fg=couleur_texte,
-            font=police
-        )
-        bouton.config(width=largeur, height=hauteur)
-        bouton.pack()
-        return bouton
+    bouton = Button(
+        text = texte,
+        command = commande,
+        background = couleur_fond,
+        fg = couleur_texte,
+        font = police
+    )
+    bouton.config(width=largeur, height=hauteur)
+    bouton.pack()
+    return bouton
 
-# Création de la fenêtre principale
-application = Tk()
+def creer_page_originale():
+    global fenetre_principale
+    fenetre_principale = Tk()
+    fenetre_principale.title("MeetingPro - Gestion des Réservations")
+    fenetre_principale.geometry("500x600") #Gestion de la taille de la fenêtre
 
-nom_application = Label(application, text="Votre compte réservation", font=("Arial", 20), fg="Green")
-nom_application.pack()
+    # Informations sur l'application
+    info = Label(fenetre_principale, text="MeetingPro vous propose ce service", font=("Arial", 20), fg="Green")
+    info.pack()
 
-# Créateur de boutons
-bouton_creator = CreerBouton("menu_principal", application)
+    #Création des boutons vers les différentes pages
 
-# Liste des boutons à créer (texte)
-liste_boutons = [
-    ("Identification"),
-    ("Mes réservations"),
-    ("Cliquez ici"),
-    ("Cliquez ici")
-]
+    creer_bouton("S'identifier/Créer un compte", lambda : creer_page("S'identifier/Créer un compte", fenetre_principale, "lightblue")),
+    creer_bouton("Salles réservables", lambda : creer_page("Salles réservables", fenetre_principale, "#98FB98")),
+    creer_bouton("Réserver une salle", lambda : creer_page("Réserver une salle", fenetre_principale, "#FFFFE0")),
+    creer_bouton("Réservation par client", lambda : creer_page("Réservation par client", fenetre_principale, "#FFDAB9")),
+    creer_bouton("Identifier si une salle est disponible pour un créneau", lambda : creer_page("Identifier si une salle est disponible pour un créneau", fenetre_principale, "#40E0D0")),
+    creer_bouton("Afficher les salles disponibles pour un créneau", lambda : creer_page("Afficher les salles disponibles pour un créneau", fenetre_principale, "#F08080")),
+    creer_bouton("Réserver une salle", lambda : creer_page("Réserver une salle", fenetre_principale, "#FFB6C1")),
 
-# Création des boutons à partir de la liste
-for texte in liste_boutons:
-    bouton_creator.creer_bouton(texte, commande=quit, largeur= 20)
+    # Canvas
+    canvas = Canvas(fenetre_principale, width=200, height=200)
+    canvas.pack()
+    canvas.create_rectangle(0, 50, 500, 500, fill='red')
 
-# Canvas
-canvas = Canvas(application, width=200, height=200)
-canvas.pack()
-canvas.create_rectangle(0, 50, 500, 500, fill='red')
+    fenetre_principale.mainloop()
 
-application.mainloop()
+
+
+def creer_page(titre, ancienne_fenetre, couleur_fond="white"):
+
+    ancienne_fenetre.destroy()
+    fenetre = Tk()
+    fenetre.title(titre)
+    fenetre.geometry("500x600") 
+    fenetre.configure(bg=couleur_fond)
+    
+   
+    creer_bouton("Revenir à la page précédente", lambda : fenetre_precedente(fenetre, ancienne_fenetre))
+
+    fenetre.mainloop()
+
+def fenetre_precedente(fenetre, ancienne_fenetre):
+    # Fonction pour revenir à la fenêtre précédente
+    if ancienne_fenetre == fenetre_principale:
+        fenetre.destroy()
+        creer_page_originale()
+    else:
+        creer_page(ancienne_fenetre, None)
+    
+
+creer_page_originale()
