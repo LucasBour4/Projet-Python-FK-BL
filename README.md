@@ -1,5 +1,5 @@
 # Intro
-
+Ce projet a pour but de créer une application appelé "MeetingPro" afin de gérer les réservations de salles de réunion de l'entreprise XXXX.
 
 
 # Install
