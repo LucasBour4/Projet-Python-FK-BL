@@ -4,9 +4,9 @@ from tkinter import ttk
 # https://python.doctor/page-tkinter-interface-graphique-python-tutoriel
 # https://stackoverflow.com/questions/22925599/mouse-position-python-tkinter
 
-fenetre_principale = None
+#fenetre_principale = None
 
-def creer_bouton(texte, commande=None, largeur=40, hauteur=2, couleur_fond="blue", couleur_texte="white", police=("Arial", 12)):
+def creer_bouton(texte, commande=None, couleur_fond="blue", couleur_texte="white", police=("Arial", 12)):
         
     #Crée un bouton avec les paramètres spécifiés.
         
@@ -17,7 +17,7 @@ def creer_bouton(texte, commande=None, largeur=40, hauteur=2, couleur_fond="blue
         fg = couleur_texte,
         font = police
     )
-    bouton.config(width=largeur, height=hauteur)
+    bouton.config(width=40, height=2)
     bouton.pack()
     return bouton
 
@@ -33,8 +33,8 @@ def creer_page_originale():
 
     #Création des boutons vers les différentes pages
 
-    creer_bouton("S'identifier/Créer un compte", lambda : creer_page("S'identifier/Créer un compte", fenetre_principale, "lightblue")),
-    creer_bouton("Salles réservables", lambda : creer_page("Salles réservables", fenetre_principale, "#98FB98")),
+    creer_bouton("S'identifier/Créer un compte", lambda : creer_page("S'identifier/Créer un compte", fenetre_principale, "lightblue"),"lightblue"),
+    creer_bouton("Salles réservables", lambda : creer_page("Salles réservables", fenetre_principale, "#98FB98"), "#98FB98", "black"),
     creer_bouton("Réserver une salle", lambda : creer_page("Réserver une salle", fenetre_principale, "#FFFFE0")),
     creer_bouton("Réservation par client", lambda : creer_page("Réservation par client", fenetre_principale, "#FFDAB9")),
     creer_bouton("Identifier si une salle est disponible pour un créneau", lambda : creer_page("Identifier si une salle est disponible pour un créneau", fenetre_principale, "#40E0D0")),
@@ -51,13 +51,12 @@ def creer_page_originale():
 
 
 def creer_page(titre, ancienne_fenetre, couleur_fond="white"):
-
+    # Crée une nouvelle fenêtre 
     ancienne_fenetre.destroy()
     fenetre = Tk()
     fenetre.title(titre)
     fenetre.geometry("500x600") 
     fenetre.configure(bg=couleur_fond)
-    
    
     creer_bouton("Revenir à la page précédente", lambda : fenetre_precedente(fenetre, ancienne_fenetre))
 
@@ -72,4 +71,4 @@ def fenetre_precedente(fenetre, ancienne_fenetre):
         creer_page(ancienne_fenetre, None)
     
 
-creer_page_originale()
+#creer_page_originale()
