@@ -1,1 +1,2 @@
-{"utilisateurs": [{"nom": "Ferry", "prenom": "Kevin", "email": "kevin.ferry@mail.com"}, {"nom": "Bour", "prenom": "Lucas", "email": "lucas.bour@mail.com"}]}
+{"utilisateurs": [{"id": "a8f0f040-c99f-4856-b17d-afd43c793d7c", "nom": "Ferry", "prenom": "Kevin", "email": "kevin.ferry@mail.com"}, {"id": "06e57574-0146-497e-97f4-cac4235a6226", "nom": "Bour", "prenom": "Lucas", "email": "lucas.bour@mail.com"}], 
+"salles": [{"nom": "Salle 1", "type": "standard"}]}
