@@ -1,3 +1,6 @@
+# Fichier : interface_graphique.py
+# -*- coding: utf-8 -*-
+
 from tkinter import *
 from tkinter import ttk
 
@@ -6,7 +9,7 @@ from tkinter import ttk
 
 #fenetre_principale = None
 
-def creer_bouton(texte, commande=None, couleur_fond="blue", couleur_texte="white", police=("Arial", 12)):
+def creer_bouton(texte : str, commande=None, couleur_fond : str ="blue", couleur_texte : str ="white", police=("Arial", 12)):
         
     #Crée un bouton avec les paramètres spécifiés.
         
@@ -45,9 +48,9 @@ def creer_page_originale():
     credits.pack()
 
     fenetre_principale.mainloop()
-    
 
-def creer_page(titre, ancienne_fenetre, couleur_fond="white"):
+
+def creer_page(titre : str, ancienne_fenetre, couleur_fond : str ="white"):
     # Crée une nouvelle fenêtre 
     ancienne_fenetre.destroy()
     fenetre = Tk()
