@@ -64,5 +64,5 @@ def ajouter_salle(nom : str, type : str):
 #ajouter_utilisateur("Ferry","Kevin","kevin.ferry@mail.com")
 #ajouter_utilisateur("Bour","Lucas","lucas.bour@mail.com")
 #print(charger_utilisateurs())
-ajouter_salle("Salle 1","standard")
-print(charger_donnees())
+#ajouter_salle("Salle 1","standard")
+#print(charger_donnees())
