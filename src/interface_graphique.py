@@ -3,6 +3,8 @@
 
 from tkinter import *
 from tkinter import ttk
+from tkinter.simpledialog import askstring
+from gestion_base_donnees import *
 
 # https://python.doctor/page-tkinter-interface-graphique-python-tutoriel
 # https://stackoverflow.com/questions/22925599/mouse-position-python-tkinter
@@ -36,7 +38,7 @@ def creer_page_originale():
 
     #Création des boutons vers les différentes pages
 
-    creer_bouton("S'identifier/Créer un compte", lambda : creer_page("S'identifier/Créer un compte", fenetre_principale, "lightblue"),"lightblue"),
+    creer_bouton("Ajouter un client", lambda : creer_page("Ajouter un client", fenetre_principale, "lightblue"),"lightblue"),
     creer_bouton("Ajouter une nouvelle salle", lambda : creer_page("Ajouter une nouvelle salle", fenetre_principale, "#98FB98"), "#98FB98", "black"),
     creer_bouton("Salles réservables", lambda : creer_page("Salles réservables", fenetre_principale, "#FFFFE0")),
     creer_bouton("Réservation par client", lambda : creer_page("Réservation par client", fenetre_principale, "#FFDAB9")),
@@ -44,8 +46,7 @@ def creer_page_originale():
     creer_bouton("Afficher les salles disponibles pour un créneau", lambda : creer_page("Afficher les salles disponibles pour un créneau", fenetre_principale, "#F08080")),
     creer_bouton("Réserver une salle", lambda : creer_page("Réserver une salle", fenetre_principale, "#FFB6C1")),
 
-    credits = Label(fenetre_principale, text="Création de Kevin FERRY et Lucas BOUR", font=("Arial", 6), fg="Green")
-    credits.pack()
+    credits(fenetre_principale)
 
     fenetre_principale.mainloop()
 
@@ -57,11 +58,12 @@ def creer_page(titre : str, ancienne_fenetre, couleur_fond : str ="white"):
     fenetre.title(titre)
     fenetre.geometry("500x600") 
     fenetre.configure(bg=couleur_fond)
-   
+
+    # Informations et boutons présents sur la page
+    specificites_page(titre)
     creer_bouton("Revenir à la page précédente", lambda : fenetre_precedente(fenetre, ancienne_fenetre))
 
-    credits = Label(fenetre, text="Création de Kevin FERRY et Lucas BOUR", font=("Arial", 6), fg="Green")
-    credits.pack()
+    credits(fenetre)
 
     fenetre.mainloop()
 
@@ -72,6 +74,26 @@ def fenetre_precedente(fenetre, ancienne_fenetre):
         creer_page_originale()
     else:
         creer_page(ancienne_fenetre, None)
-    
 
-#creer_page_originale()
+def credits(fenetre):
+    # Ajoute les noms des créateurs de cette application
+    credits = Label(fenetre, text="Création de Kevin FERRY et Lucas BOUR", font=("Arial", 6), fg="Green")
+    credits.pack()
+    
+def specificites_page(role):
+    # Ajoute les boutons, labels et autres spécificités liés à la page
+    if role == "Ajouter un client":
+        couleur_bouton = "Steel Blue"
+        creer_bouton("Ajouter un nouveau client", lambda : bouton_ajouter_utilisateur(), couleur_bouton)
+        creer_bouton("Vous avez oubliez votre id?", None , couleur_bouton)
+        return None
+
+def bouton_ajouter_utilisateur():
+    nom = askstring("Saisie", "Quel est votre nom ?")
+    prenom = askstring("Saisie", "Quel est votre prénom ?")
+    adresse_mail = askstring("Saisie", "Quelle est votre adresse mail ?")
+    print(f"Nom: {nom}, Prénom: {prenom}, Adresse mail: {adresse_mail}")
+    ajouter_utilisateur(nom, prenom, adresse_mail)
+
+
+creer_page_originale()
