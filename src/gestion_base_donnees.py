@@ -30,6 +30,7 @@ def ajouter_utilisateur(nom : str, prenom : str, adresse_mail : str):
     for utilisateur in donnees["utilisateurs"]:
         if utilisateur["email"] == adresse_mail:
             return  
+        
 
     nouveau_utilisateur = {
         "id": str(uuid.uuid4()),

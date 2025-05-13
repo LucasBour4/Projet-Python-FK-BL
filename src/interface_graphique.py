@@ -11,8 +11,14 @@ from gestion_base_donnees import *
 
 #fenetre_principale = None
 
+def afficher_message_temporaire(message, duree=10000):
+    # Affiche un message temporaire (duree en millisecondes)
+    popup = Toplevel()
+    popup.title("Message")
+    Label(popup, text=message, font=("Arial", 12)).pack(padx=20, pady=20)
+    popup.after(duree, popup.destroy)
+
 def creer_bouton(texte : str, commande=None, couleur_fond : str ="blue", couleur_texte : str ="white", police=("Arial", 12)):
-        
     #Crée un bouton avec les paramètres spécifiés.
         
     bouton = Button(
@@ -27,6 +33,7 @@ def creer_bouton(texte : str, commande=None, couleur_fond : str ="blue", couleur
     return bouton
 
 def creer_page_originale():
+    # Créer la page principale de l'application
     global fenetre_principale
     fenetre_principale = Tk()
     fenetre_principale.title("MeetingPro - Gestion des Réservations")
@@ -37,7 +44,6 @@ def creer_page_originale():
     info.pack()
 
     #Création des boutons vers les différentes pages
-
     creer_bouton("Ajouter un client", lambda : creer_page("Ajouter un client", fenetre_principale, "lightblue"),"lightblue"),
     creer_bouton("Ajouter une nouvelle salle", lambda : creer_page("Ajouter une nouvelle salle", fenetre_principale, "#98FB98"), "#98FB98", "black"),
     creer_bouton("Salles réservables", lambda : creer_page("Salles réservables", fenetre_principale, "#FFFFE0")),
@@ -85,15 +91,37 @@ def specificites_page(role):
     if role == "Ajouter un client":
         couleur_bouton = "Steel Blue"
         creer_bouton("Ajouter un nouveau client", lambda : bouton_ajouter_utilisateur(), couleur_bouton)
-        creer_bouton("Vous avez oubliez votre id?", None , couleur_bouton)
+        creer_bouton("Vous avez oubliez votre id?", lambda : bouton_id() , couleur_bouton)
         return None
+    elif role == "Ajouter une nouvelle salle":
+        couleur_bouton = "#2E8B57"
+        creer_bouton("Ajouter une nouvelle salle", lambda : bouton_ajouter_salle(), couleur_bouton)
 
 def bouton_ajouter_utilisateur():
+    # Bouton servant à ajouter un utilisateur
     nom = askstring("Saisie", "Quel est votre nom ?")
     prenom = askstring("Saisie", "Quel est votre prénom ?")
     adresse_mail = askstring("Saisie", "Quelle est votre adresse mail ?")
-    print(f"Nom: {nom}, Prénom: {prenom}, Adresse mail: {adresse_mail}")
+
+    # Vérifier que aucun des 3 champs soit vide
+
+    #print(f"Nom: {nom}, Prénom: {prenom}, Adresse mail: {adresse_mail}")
     ajouter_utilisateur(nom, prenom, adresse_mail)
+
+def bouton_id():
+    # Renvoie l'id de l'utilisateur à l'aide de son adresse mail
+    adresse_mail = askstring("Saisie", "Quelle est votre adresse mail ?")
+    if adresse_mail is None:
+        return
+    donnees = charger_donnees()
+    for utilisateur in donnees["utilisateurs"]:
+        if utilisateur["email"] == adresse_mail:
+            afficher_message_temporaire(utilisateur["id"])
+            return
+     
+    afficher_message_temporaire("Cette adresse mail n'est pas enregistrée dans la base de données")
+
+
 
 
 creer_page_originale()
