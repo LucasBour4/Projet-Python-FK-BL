@@ -121,7 +121,10 @@ def bouton_id():
      
     afficher_message_temporaire("Cette adresse mail n'est pas enregistrée dans la base de données")
 
-
+def bouton_ajouter_salle():
+    # Bouton servant à ajouter un utilisateur
+    # A faire
+    None
 
 
 creer_page_originale()
