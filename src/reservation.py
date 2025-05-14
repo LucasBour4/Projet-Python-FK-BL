@@ -30,6 +30,8 @@ class Reservation():
         self.date = date
         self.time = time
         self.room = []
+        self.borrowed_rooms = {}
+        self.members = set()
 
     def is_room_available(self, room : Room) -> bool:
         if isinstance(room, Room) and room not in self.room:
@@ -45,6 +47,14 @@ class Reservation():
             return True
         except ValueError:
             return False
+        
+    def borrow_room(self, room : Room, person):
+        if room not in self.room:
+            raise ReservationError("La salle n'est pas disponible.")
+        if person not in self.members:
+            raise ReservationError(f"{person} n'est pas un membre.")
+        if room in self.borrowed_rooms:
+            raise ReservationError("La salle est déjà prise.")
     
 
     def __str__(self):
