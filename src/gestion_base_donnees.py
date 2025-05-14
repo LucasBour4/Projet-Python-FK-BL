@@ -56,7 +56,7 @@ def ajouter_salle(nom : str, type : str):
     nouvelle_salle = {
         "nom": nom,
         "type": type
-    }    
+    }
 
     donnees["salles"].append(nouvelle_salle)
     enregistrer_donnees(donnees)

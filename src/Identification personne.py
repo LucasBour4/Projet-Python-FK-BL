@@ -1,15 +1,15 @@
 class Person:
     """Nom et prénom de la personne"""
 
-    def __init__(self, first_name, last_name):
+    def __init__(self, first_name, last_name, email=None, id=None):
         self.first_name = first_name
         self.last_name = last_name
+        self.email = email
+        self.id = id
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-    
-class Reservation:
-    """To implement."""
+      
     
 class Rooms1: "salle classique de 1 à 4 personnes"
     def __init__(self, capacité):
