@@ -18,19 +18,12 @@ def afficher_message_temporaire(message, duree=10000):
     Label(popup, text=message, font=("Arial", 12)).pack(padx=20, pady=20)
     popup.after(duree, popup.destroy)
 
-def creer_bouton(texte : str, commande=None, couleur_fond : str ="blue", couleur_texte : str ="white", police=("Arial", 12)):
-    #Crée un bouton avec les paramètres spécifiés.
-        
-    bouton = Button(
-        text = texte,
-        command = commande,
-        background = couleur_fond,
-        fg = couleur_texte,
-        font = police
-    )
-    bouton.config(width=40, height=2)
-    bouton.pack()
-    return bouton
+class Bouton(Button):
+    def __init__(self, texte : str, commande = None, couleur_fond : str ="blue", couleur_texte : str ="white", police=("Arial", 12)):
+        # Crée un bouton avec les paramètres spécifiés.
+        super().__init__(text=texte, command=commande, background=couleur_fond, fg=couleur_texte, font=police)
+        self.config(width=40, height=2)
+        self.pack()
 
 def creer_page_originale():
     # Créer la page principale de l'application
@@ -44,13 +37,13 @@ def creer_page_originale():
     info.pack()
 
     #Création des boutons vers les différentes pages
-    creer_bouton("Ajouter un client", lambda : creer_page("Ajouter un client", fenetre_principale, "lightblue"),"lightblue"),
-    creer_bouton("Ajouter une nouvelle salle", lambda : creer_page("Ajouter une nouvelle salle", fenetre_principale, "#98FB98"), "#98FB98", "black"),
-    creer_bouton("Salles réservables", lambda : creer_page("Salles réservables", fenetre_principale, "#FFFFE0")),
-    creer_bouton("Réservation par client", lambda : creer_page("Réservation par client", fenetre_principale, "#FFDAB9")),
-    creer_bouton("Identifier si une salle est disponible pour un créneau", lambda : creer_page("Identifier si une salle est disponible pour un créneau", fenetre_principale, "#40E0D0")),
-    creer_bouton("Afficher les salles disponibles pour un créneau", lambda : creer_page("Afficher les salles disponibles pour un créneau", fenetre_principale, "#F08080")),
-    creer_bouton("Réserver une salle", lambda : creer_page("Réserver une salle", fenetre_principale, "#FFB6C1")),
+    Bouton("Ajouter un client", lambda : creer_page("Ajouter un client", fenetre_principale, "lightblue"),"lightblue"),
+    Bouton("Ajouter une nouvelle salle", lambda : creer_page("Ajouter une nouvelle salle", fenetre_principale, "#98FB98"), "#98FB98", "black"),
+    Bouton("Salles réservables", lambda : creer_page("Salles réservables", fenetre_principale, "#FFFFE0")),
+    Bouton("Réservation par client", lambda : creer_page("Réservation par client", fenetre_principale, "#FFDAB9")),
+    Bouton("Identifier si une salle est disponible pour un créneau", lambda : creer_page("Identifier si une salle est disponible pour un créneau", fenetre_principale, "#40E0D0")),
+    Bouton("Afficher les salles disponibles pour un créneau", lambda : creer_page("Afficher les salles disponibles pour un créneau", fenetre_principale, "#F08080")),
+    Bouton("Réserver une salle", lambda : creer_page("Réserver une salle", fenetre_principale, "#FFB6C1")),
 
     credits(fenetre_principale)
 
@@ -67,7 +60,7 @@ def creer_page(titre : str, ancienne_fenetre, couleur_fond : str ="white"):
 
     # Informations et boutons présents sur la page
     specificites_page(titre)
-    creer_bouton("Revenir à la page précédente", lambda : fenetre_precedente(fenetre, ancienne_fenetre))
+    Bouton("Revenir à la page précédente", lambda : fenetre_precedente(fenetre, ancienne_fenetre))
 
     credits(fenetre)
 
@@ -90,12 +83,12 @@ def specificites_page(role):
     # Ajoute les boutons, labels et autres spécificités liés à la page
     if role == "Ajouter un client":
         couleur_bouton = "Steel Blue"
-        creer_bouton("Ajouter un nouveau client", lambda : bouton_ajouter_utilisateur(), couleur_bouton)
-        creer_bouton("Vous avez oubliez votre id?", lambda : bouton_id() , couleur_bouton)
+        Bouton("Ajouter un nouveau client", lambda : bouton_ajouter_utilisateur(), couleur_bouton)
+        Bouton("Vous avez oubliez votre id?", lambda : bouton_id() , couleur_bouton)
         return None
     elif role == "Ajouter une nouvelle salle":
         couleur_bouton = "#2E8B57"
-        creer_bouton("Ajouter une nouvelle salle", lambda : bouton_ajouter_salle(), couleur_bouton)
+        Bouton("Ajouter une nouvelle salle", lambda : bouton_ajouter_salle(), couleur_bouton)
 
 def bouton_ajouter_utilisateur():
     # Bouton servant à ajouter un utilisateur

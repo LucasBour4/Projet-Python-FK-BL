@@ -41,7 +41,7 @@ def ajouter_utilisateur(nom : str, prenom : str, adresse_mail : str):
     donnees["utilisateurs"].append(nouveau_utilisateur)
     enregistrer_donnees(donnees)
 
-def ajouter_salle(nom : str, type : str, capacite : int):
+def ajouter_salle(nom : str, type : str):
     # Ajoute une nouvelle salle   
     donnees = charger_donnees() 
 
@@ -56,7 +56,7 @@ def ajouter_salle(nom : str, type : str, capacite : int):
     nouvelle_salle = {
         "nom": nom,
         "type": type
-        "capacite": capacite
+        #"capacite": capacite
     }    
 
     donnees["salles"].append(nouvelle_salle)
@@ -66,5 +66,5 @@ def ajouter_salle(nom : str, type : str, capacite : int):
 #ajouter_utilisateur("Ferry","Kevin","kevin.ferry@mail.com")
 #ajouter_utilisateur("Bour","Lucas","lucas.bour@mail.com")
 #print(charger_utilisateurs())
-ajouter_salle("Salle 1","standard", 10)
+#ajouter_salle("Salle 1","standard", 10)
 #print(charger_donnees())
