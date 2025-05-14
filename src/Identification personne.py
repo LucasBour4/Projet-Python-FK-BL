@@ -10,6 +10,24 @@ class Person:
     
 class Reservation:
     """To implement."""
+    
+class Rooms1: "salle classique de 1 à 4 personnes"
+    def __init__(self, capacité):
+        self.capacité = capacité
+
+class Rooms2: "salle avec ordinateur de 1 à 4 personnes"
+    def __init__(self, capacité):
+        self.capacité = capacité
+
+class Rooms3: "salle de 4 à 10 personnes"
+    def __init__(self, capacité):
+        self.capacité = capacité
+
+class ReservationError(Exception):
+    """Erreur de réservation"""
+    pass
+
+class Reservation:
 
     def __init__(self, id):
         self.id = id
@@ -19,18 +37,29 @@ class Reservation:
         "salle avec ordinateur de 1 à 4 personnes"
         self.rooms3 = []
         "salle de 4 à 10 personnes"
-        self.members = {}
+        self.members = set()
         "id associé à l'email"
         self.borrowed_rooms = {}
 
-    def is_room_available(self, room : Room) -> bool:
-        if room not in self.rooms:
-            raise ReservationError(f"La salle est disponible")
-        return room not in self.borrowed_rooms
+    def is_room_available(self, room : Rooms1) -> bool:
+        if isinstance(room, Rooms1) and room not in self.rooms1:
+            raise ReservationError("La salle n'est pas disponible.")
+        elif isinstance(room, Rooms2) and room not in self.rooms2:
+            raise ReservationError("La salle n'est pas disponible.")
+        elif isinstance(room, Rooms3) and room not in self.rooms3:
+            raise ReservationError("La salle n'est pas disponible.")
+            
     
-    def borrow_room(self, room : Room, person: Person):
-        if room not in self.rooms:
+    def borrow_room(self, room : Rooms1, person: Person):
+        if room not in self.rooms1:
             raise ReservationError(f"La salle n'est pas dans la disponible.")
+        if room not in self.rooms2:
+            raise ReservationError(f"La salle n'est pas dans la disponible.")
+        if room not in self.rooms3:
+            raise ReservationError(f"La salle n'est pas dans la disponible.")
+        
+        if person not in self.members:
+            raise ReservationError(f"{person} n'est pas un membre.")
         if room in self.borrowed_rooms:
             raise ReservationError(f"La salle est déjà prise.")
         self.borrowed_rooms[room] = person
@@ -43,19 +72,18 @@ class Reservation:
             self.members.add(person)
             print(f"{person} a été ajouté aux membres.")
 
-    def add_new_room(room: Room):
-        self.rooms.append(room)
-        print(f"Une nouvelle salle a été ajouté à la liste.")
-
-
-class ReservationError(Exception):
-    """Erreur de réservation"""
-
-    def __init__(self, message):
-        self.message = message
-
-    def __str__(self):
-        return f"ReservationError: {self.message}"
+    def add_new_room(room):
+        if isinstance(room, Rooms1):
+            self.rooms1.append(room)
+            print(f"Une nouvelle salle a été ajouté à la liste.")
+        elif isinstance(room, Rooms2):
+            self.rooms2.append(room)
+            print(f"Une nouvelle salle a été ajouté à la liste.")
+        elif isinstance(room, Rooms3):
+            self.rooms3.append(room)
+            print(f"Une nouvelle salle a été ajouté à la liste.")
+        else:
+            raise ReservationError("Type de salle non reconnu.")
     
 def main():
     """Test your code here"""
