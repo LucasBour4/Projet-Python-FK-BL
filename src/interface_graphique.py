@@ -11,7 +11,7 @@ from gestion_base_donnees import *
 
 #fenetre_principale = None
 
-def afficher_message_temporaire(message, duree=10000):
+def afficher_message_temporaire(message : str, duree : int =10000):
     # Affiche un message temporaire (duree en millisecondes)
     popup = Toplevel()
     popup.title("Message")
@@ -91,7 +91,7 @@ class Bouton(Button):
 #         Bouton("Ajouter une nouvelle salle", lambda : bouton_ajouter_salle(), couleur_bouton)
 
 class Application:
-    def __init__(self):
+    def __init__(self) -> None:
         # Initialisation de la fenêtre principale
         self.fenetre_principale = None
 
