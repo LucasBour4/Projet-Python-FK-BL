@@ -31,7 +31,7 @@ class Bouton(Button):
         # Crée un bouton avec les paramètres spécifiés.
         super().__init__(master, text=texte, command=commande, background=couleur_fond, fg=couleur_texte, font=police)
         self.config(width=20, height=4)
-        self.pack()
+        #self.pack()
 
 # class Application:
 #     def __init__(self) -> None:
@@ -99,50 +99,73 @@ class Application(Tk):
     def __init__(self):
         super().__init__()
         self.title("MeetingPro - Réservations de Salles de Réunion")
-        self.geometry("900x400")
+        self.geometry("900x430")
+
+        self.nav_frame = Frame(self, bg=FOND_FENETRE)
+        self.nav_frame.grid(row=0, column=0, sticky="ns", padx=10, pady=10)
+
+        self.container = Frame(self, bg=FOND_FENETRE)
+        self.container.grid(row=0, column=1, sticky="nsew")
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (PageAccueil, Ajout_de_salle_et_client, Reserver_salle):
+        for F in (PageAccueil, Ajout_de_salle_et_client, Reserver_salle, Reservations):
             page_name = F.__name__
-            frame = F(parent=self, controller=self)
+            frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame("PageAccueil")  
+        self.pages = [
+            ("Page d'accueil", "PageAccueil"),
+            ("Ajout de salle et client", "Ajout_de_salle_et_client"),
+            ("Réserver une salle", "Reserver_salle"),
+            ("Réservations", "Reservations")
+        ]
+
+        self.nav_buttons = {}
+        self.show_frame("PageAccueil")
+
+    def build_nav(self, active_page):
+        for widget in self.nav_frame.winfo_children():
+            widget.destroy()
+
+        for texte, page_name in self.pages:
+            if page_name == active_page:
+                label = Label(self.nav_frame, text=texte, bg=BOUTON_PRINCIPAL, fg="white", width=20, height=4, font=("Arial", 12)).pack(fill="x", pady=5)
+                self.nav_buttons[page_name] = label
+            else:
+                bouton = Bouton(self.nav_frame, texte, lambda p=page_name: self.show_frame(p)).pack(fill="x", pady=5)
+                self.nav_buttons[page_name] = bouton
+
+        # Label en bas de la navigation
+        Label(self.nav_frame, text="Création de Kevin FERRY et Lucas BOUR", font=("Arial", 8), fg="green", bg=FOND_FENETRE).pack(side="bottom", pady=10)
 
     def show_frame(self, page_name):
+        self.build_nav(page_name)
         frame = self.frames[page_name]
-        frame.tkraise()    
+        frame.tkraise()
 
 class PageAccueil(Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent, bg = FOND_FENETRE)
-        Label(self, text="Page d'accueil", bg = BOUTON_PRINCIPAL, fg = TEXTE_BOUTON, width=20, height=4).pack()
-        Bouton(self, "Ajout de salle et client", lambda: controller.show_frame("Ajout_de_salle_et_client"))
-        Bouton(self, "Réserver une salle", lambda: controller.show_frame("Reserver_salle"))   
-
-        
-        Label(self, text="Création de Kevin FERRY et Lucas BOUR", font=("Arial", 6), fg="Green").pack() 
+        super().__init__(parent, bg=FOND_FENETRE)
+        Label(self, text="Bienvenue sur MeetingPro !", font=("Arial", 14), fg=TEXTE_TITRE, bg=FOND_FENETRE).pack(pady=20)
 
 class Ajout_de_salle_et_client(Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent)
-        Bouton(self, "Page d'accueil", lambda: controller.show_frame("PageAccueil"))
-        Label(self, text="Ajout de salle et client").pack()
-        Bouton(self, "Réserver une salle", lambda: controller.show_frame("Reserver_salle"))
-
-        Label(self, text="Création de Kevin FERRY et Lucas BOUR", font=("Arial", 6), fg="Green").pack() 
+        super().__init__(parent, bg=FOND_FENETRE)
+        Button(self, text="Ajouter un nouveau client", command=lambda: bouton_ajouter_utilisateur()).pack(pady=10)
+        Bouton(self, "Vous avez oublié votre id?", lambda: bouton_id()).pack(pady=10)
 
 class Reserver_salle(Frame):
     def __init__(self, parent, controller):
-        super().__init__(parent)
-        Bouton(self, "Page d'accueil", lambda: controller.show_frame("PageAccueil"))
-        Bouton(self, "Ajout de salle et client", lambda: controller.show_frame("Ajout_de_salle_et_client"))
-        Label(self, text="Réserver une salle").pack()     
+        super().__init__(parent, bg=FOND_FENETRE)
+        Label(self, text="Réservation de salle", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
 
-        Label(self, text="Création de Kevin FERRY et Lucas BOUR", font=("Arial", 6), fg="Green").pack() 
-
-
+class Reservations(Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent, bg=FOND_FENETRE)
+        Label(self, text="Consultation des réservations", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
 
 def bouton_ajouter_utilisateur():
     # Bouton servant à ajouter un utilisateur
