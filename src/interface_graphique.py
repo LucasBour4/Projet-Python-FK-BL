@@ -19,7 +19,7 @@ TEXTE_BOUTON = "#333333"
 TEXTE_TITRE = "#2E8B57"
 ZONE_SAISIE = "#F5F5F5"
 
-def afficher_message_temporaire(message : str, duree : int =10000):
+def afficher_message_temporaire(message : str, duree : int =50000):
     # Affiche un message temporaire (duree en millisecondes)
     popup = Toplevel()
     popup.title("Message")
@@ -147,36 +147,104 @@ class Application(Tk):
         frame.tkraise()
 
 class PageAccueil(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent):
         super().__init__(parent, bg=FOND_FENETRE)
         Label(self, text="Bienvenue sur MeetingPro !", font=("Arial", 14), fg=TEXTE_TITRE, bg=FOND_FENETRE).pack(pady=20)
 
 class Ajout_de_salle_et_client(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent):
         super().__init__(parent, bg=FOND_FENETRE)
-        Button(self, text="Ajouter un nouveau client", command=lambda: bouton_ajouter_utilisateur()).pack(pady=10)
-        Bouton(self, "Vous avez oublié votre id?", lambda: bouton_id()).pack(pady=10)
+
+        # Boutons à gauche
+        Bouton(self, "Ajouter un nouveau client", self.afficher_formulaire).grid(row=0, column=0, pady=10, padx=20, sticky="nw")
+        Bouton(self, "Vous avez oublié votre id ?", bouton_id).grid(row=1, column=0, pady=10, padx=20, sticky="nw")
+
+        self.formulaire = None  # Contiendra le frame formulaire quand créé
+
+    def creer_formulaire(self):
+        # Crée et retourne un frame avec les champs et bouton valider
+        form = Frame(self, bg=FOND_FENETRE)
+
+        Label(form, text="Nom :", bg=FOND_FENETRE).grid(row=0, column=0, sticky="w", padx=5, pady=5)
+        nom_entry = Entry(form, bg=ZONE_SAISIE)
+        nom_entry.grid(row=0, column=1, sticky="w", padx=5, pady=5)
+
+        Label(form, text="Prénom :", bg=FOND_FENETRE).grid(row=1, column=0, sticky="w", padx=5, pady=5)
+        prenom_entry = Entry(form, bg=ZONE_SAISIE)
+        prenom_entry.grid(row=1, column=1, sticky="w", padx=5, pady=5)
+
+        Label(form, text="Adresse mail :", bg=FOND_FENETRE).grid(row=2, column=0, sticky="w", padx=5, pady=5)
+        email_entry = Entry(form, bg=ZONE_SAISIE)
+        email_entry.grid(row=2, column=1, sticky="w", padx=5, pady=5)
+
+        def valider():
+            nom = nom_entry.get().strip()
+            prenom = prenom_entry.get().strip()
+            email = email_entry.get().strip()
+
+            if not nom or not prenom or not email:
+                afficher_message_temporaire("Tous les champs sont requis.")
+                return
+
+            ajouter_utilisateur(nom, prenom, email)
+            afficher_message_temporaire("Utilisateur ajouté avec succès.")
+            form.destroy()  # Supprime le formulaire après validation
+            self.formulaire = None
+
+        Bouton(form, "Valider", valider).grid(row=3, column=1, sticky="e", pady=10, padx=5)
+
+        return form
+
+    def afficher_formulaire(self):
+        # Si formulaire déjà affiché, on ne fait rien
+        if self.formulaire is not None:
+            return
+
+        self.formulaire = self.creer_formulaire()
+        self.formulaire.grid(row=0, column=1, rowspan=3, padx=20, pady=10, sticky="nw")
+
+    def creer_champ_saisie(self, parent, label_texte):
+        frame = Frame(parent, bg=FOND_FENETRE)
+        frame.pack(pady=5)
+        Label(frame, text=label_texte, font=("Arial", 12), bg=FOND_FENETRE).pack(side=LEFT, padx=5)
+        entry = Entry(frame, width=40, bg=ZONE_SAISIE)
+        entry.pack(side=LEFT, padx=5)
+        return entry
+
+    def afficher_formulaire_ajout(self):
+        if not self.formulaire_visible:
+            self.form_frame.pack(pady=10)
+            self.bouton_valider.pack(pady=10)
+            self.formulaire_visible = True
+
+    def ajouter_client_depuis_champs(self):
+        nom = self.nom_entry.get().strip()
+        prenom = self.prenom_entry.get().strip()
+        email = self.email_entry.get().strip()
+
+        if not nom or not prenom or not email:
+            afficher_message_temporaire("Tous les champs sont requis.")
+            return
+
+        ajouter_utilisateur(nom, prenom, email)
+        afficher_message_temporaire("Utilisateur ajouté avec succès.")
+
+        self.nom_entry.delete(0, END)
+        self.prenom_entry.delete(0, END)
+        self.email_entry.delete(0, END)
+        self.form_frame.pack_forget()
+        self.formulaire_visible = False
+
 
 class Reserver_salle(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent):
         super().__init__(parent, bg=FOND_FENETRE)
         Label(self, text="Réservation de salle", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
 
 class Reservations(Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent):
         super().__init__(parent, bg=FOND_FENETRE)
         Label(self, text="Consultation des réservations", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
-
-def bouton_ajouter_utilisateur():
-    # Bouton servant à ajouter un utilisateur
-    nom = askstring("Saisie", "Quel est votre nom ?")
-    prenom = askstring("Saisie", "Quel est votre prénom ?")
-    adresse_mail = askstring("Saisie", "Quelle est votre adresse mail ?")
-
-    # Vérifier que aucun des 3 champs soit vide
-
-    #print(f"Nom: {nom}, Prénom: {prenom}, Adresse mail: {adresse_mail}")
-    ajouter_utilisateur(nom, prenom, adresse_mail)
 
 def bouton_id():
     # Renvoie l'id de l'utilisateur à l'aide de son adresse mail
