@@ -1,15 +1,10 @@
-# Fichier : interface_graphique.py
+# interface_graphique.py
 # -*- coding: utf-8 -*-
 
 from tkinter import *
-from tkinter import ttk
+from tkinter.ttk import Combobox
 from tkinter.simpledialog import askstring
 from gestion_base_donnees import *
-
-# https://python.doctor/page-tkinter-interface-graphique-python-tutoriel
-# https://stackoverflow.com/questions/22925599/mouse-position-python-tkinter
-
-#fenetre_principale = None
 
 # Variables de style
 FOND_FENETRE = "#F0FFF0"
@@ -19,8 +14,7 @@ TEXTE_BOUTON = "#333333"
 TEXTE_TITRE = "#2E8B57"
 ZONE_SAISIE = "#F5F5F5"
 
-def afficher_message_temporaire(message : str, duree : int =50000):
-    # Affiche un message temporaire (duree en millisecondes)
+def afficher_message_temporaire(message : str, duree : int = 5000):
     popup = Toplevel()
     popup.title("Message")
     Label(popup, text=message, font=("Arial", 12)).pack(padx=20, pady=20)
@@ -28,78 +22,14 @@ def afficher_message_temporaire(message : str, duree : int =50000):
 
 class Bouton(Button):
     def __init__(self, master, texte : str, commande = None, couleur_fond : str = BOUTON_PRINCIPAL, couleur_texte : str ="white", police=("Arial", 12)):
-        # Crée un bouton avec les paramètres spécifiés.
         super().__init__(master, text=texte, command=commande, background=couleur_fond, fg=couleur_texte, font=police)
-        self.config(width=20, height=4)
-        #self.pack()
-
-# class Application:
-#     def __init__(self) -> None:
-#         # Initialisation de la fenêtre principale
-#         self.fenetre_principale = None
-
-#     def creer_page_originale(self):
-#         # Créer la page principale de l'application
-#         self.fenetre_principale = Tk()
-#         self.fenetre_principale.title("MeetingPro - Gestion des Réservations")
-#         self.fenetre_principale.geometry("500x600")  # Gestion de la taille de la fenêtre
-
-#         # Informations sur l'application
-#         info = Label(self.fenetre_principale, text="MeetingPro vous propose ce service de réservation de salle", font=("Arial", 13), fg="Green")
-#         info.pack()
-
-#         # Création des boutons vers les différentes pages
-#         Bouton("Ajouter un client", lambda: self.creer_page("Ajouter un client", self.fenetre_principale, "lightblue"), "lightblue")
-#         Bouton("Ajouter une nouvelle salle", lambda: self.creer_page("Ajouter une nouvelle salle", self.fenetre_principale, "#98FB98"), "#98FB98", "black")
-#         Bouton("Salles réservables", lambda: self.creer_page("Salles réservables", self.fenetre_principale, "#FFFFE0"))
-#         Bouton("Réservation par client", lambda: self.creer_page("Réservation par client", self.fenetre_principale, "#FFDAB9"))
-#         Bouton("Identifier si une salle est disponible pour un créneau", lambda: self.creer_page("Identifier si une salle est disponible pour un créneau", self.fenetre_principale, "#40E0D0"))
-#         Bouton("Afficher les salles disponibles pour un créneau", lambda: self.creer_page("Afficher les salles disponibles pour un créneau", self.fenetre_principale, "#F08080"))
-#         Bouton("Réserver une salle", lambda: self.creer_page("Réserver une salle", self.fenetre_principale, "#FFB6C1"))
-
-#         self.credits(self.fenetre_principale)
-#         self.fenetre_principale.mainloop()
-
-#     def creer_page(self, titre: str, ancienne_fenetre, couleur_fond: str = "white"):
-#         # Crée une nouvelle fenêtre
-#         ancienne_fenetre.destroy()
-#         fenetre = Tk()
-#         fenetre.title(titre)
-#         fenetre.geometry("500x600")
-#         fenetre.configure(bg=couleur_fond)
-
-#         # Informations et boutons présents sur la page
-#         self.specificites_page(titre)
-#         Bouton("Revenir à la page précédente", lambda: self.fenetre_precedente(fenetre))
-
-#         self.credits(fenetre)
-#         fenetre.mainloop()
-
-#     def fenetre_precedente(self, fenetre):
-#         # Fonction pour revenir à la fenêtre précédente
-#         fenetre.destroy()
-#         self.creer_page_originale()
-
-#     def credits(self, fenetre):
-#         # Ajoute les noms des créateurs de cette application
-#         credits = Label(fenetre, text="Création de Kevin FERRY et Lucas BOUR", font=("Arial", 6), fg="Green")
-#         credits.pack()
-
-#     def specificites_page(self, role):
-#         # Ajoute les boutons, labels et autres spécificités liés à la page
-#         if role == "Ajouter un client":
-#             couleur_bouton = "Steel Blue"
-#             Bouton("Ajouter un nouveau client", lambda: bouton_ajouter_utilisateur(), couleur_bouton)
-#             Bouton("Vous avez oublié votre id?", lambda: bouton_id(), couleur_bouton)
-#         elif role == "Ajouter une nouvelle salle":
-#             couleur_bouton = "#2E8B57"
-#             Bouton("Ajouter une nouvelle salle", lambda: bouton_ajouter_salle(), couleur_bouton)
+        self.config(width=20, height=2)
 
 class Application(Tk):
     def __init__(self):
         super().__init__()
         self.title("MeetingPro - Réservations de Salles de Réunion")
-        self.geometry("900x430")
+        self.geometry("900x500")
 
         self.nav_frame = Frame(self, bg=FOND_FENETRE)
         self.nav_frame.grid(row=0, column=0, sticky="ns", padx=10, pady=10)
@@ -132,13 +62,10 @@ class Application(Tk):
 
         for texte, page_name in self.pages:
             if page_name == active_page:
-                label = Label(self.nav_frame, text=texte, bg=BOUTON_PRINCIPAL, fg="white", width=20, height=4, font=("Arial", 12)).pack(fill="x", pady=5)
-                self.nav_buttons[page_name] = label
+                Label(self.nav_frame, text=texte, bg=BOUTON_PRINCIPAL, fg="white", width=20, height=2, font=("Arial", 12)).pack(fill="x", pady=5)
             else:
-                bouton = Bouton(self.nav_frame, texte, lambda p=page_name: self.show_frame(p)).pack(fill="x", pady=5)
-                self.nav_buttons[page_name] = bouton
+                Bouton(self.nav_frame, texte, lambda p=page_name: self.show_frame(p)).pack(fill="x", pady=5)
 
-        # Label en bas de la navigation
         Label(self.nav_frame, text="Création de Kevin FERRY et Lucas BOUR", font=("Arial", 8), fg="green", bg=FOND_FENETRE).pack(side="bottom", pady=10)
 
     def show_frame(self, page_name):
@@ -147,124 +74,133 @@ class Application(Tk):
         frame.tkraise()
 
 class PageAccueil(Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         super().__init__(parent, bg=FOND_FENETRE)
         Label(self, text="Bienvenue sur MeetingPro !", font=("Arial", 14), fg=TEXTE_TITRE, bg=FOND_FENETRE).pack(pady=20)
 
 class Ajout_de_salle_et_client(Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         super().__init__(parent, bg=FOND_FENETRE)
+        self.controller = controller
 
-        # Boutons à gauche
-        Bouton(self, "Ajouter un nouveau client", self.afficher_formulaire).grid(row=0, column=0, pady=10, padx=20, sticky="nw")
-        Bouton(self, "Vous avez oublié votre id ?", bouton_id).grid(row=1, column=0, pady=10, padx=20, sticky="nw")
+        Bouton(self, "Ajouter un nouveau client", lambda: self.afficher_formulaire("client")).grid(row=0, column=0, pady=10, padx=20, sticky="nw")
+        Bouton(self, "Vous avez oublié votre id ?", lambda: self.afficher_formulaire("id")).grid(row=1, column=0, pady=10, padx=20, sticky="nw")
+        Bouton(self, "Ajouter une nouvelle salle", lambda: self.afficher_formulaire("salle")).grid(row=2, column=0, pady=10, padx=20, sticky="nw")
 
-        self.formulaire = None  # Contiendra le frame formulaire quand créé
+        self.formulaire_client = None
+        self.formulaire_salle = None
+        self.formulaire_id = None
 
-    def creer_formulaire(self):
-        # Crée et retourne un frame avec les champs et bouton valider
+    def _creer_label_entry(self, parent, texte, ligne, colonne, combobox_values=None, var=None, width=None):
+        Label(parent, text=texte, bg=FOND_FENETRE).grid(row=ligne, column=colonne, sticky="w", padx=5, pady=5)
+        if combobox_values:
+            var = var or StringVar()
+            cb = Combobox(parent, textvariable=var, state="readonly", values=combobox_values)
+            cb.grid(row=ligne, column=colonne+1, sticky="w", padx=5, pady=5)
+            cb.current(0)
+            return var, cb
+        else:
+            entry = Entry(parent, bg=ZONE_SAISIE, textvariable=var, width=width)
+            entry.grid(row=ligne, column=colonne+1, sticky="w", padx=5, pady=5)
+            return entry
+
+    def creer_formulaire_client(self):
         form = Frame(self, bg=FOND_FENETRE)
-
-        Label(form, text="Nom :", bg=FOND_FENETRE).grid(row=0, column=0, sticky="w", padx=5, pady=5)
-        nom_entry = Entry(form, bg=ZONE_SAISIE)
-        nom_entry.grid(row=0, column=1, sticky="w", padx=5, pady=5)
-
-        Label(form, text="Prénom :", bg=FOND_FENETRE).grid(row=1, column=0, sticky="w", padx=5, pady=5)
-        prenom_entry = Entry(form, bg=ZONE_SAISIE)
-        prenom_entry.grid(row=1, column=1, sticky="w", padx=5, pady=5)
-
-        Label(form, text="Adresse mail :", bg=FOND_FENETRE).grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        email_entry = Entry(form, bg=ZONE_SAISIE)
-        email_entry.grid(row=2, column=1, sticky="w", padx=5, pady=5)
+        nom_entry = self._creer_label_entry(form, "Nom :", 0, 0)
+        prenom_entry = self._creer_label_entry(form, "Prénom :", 1, 0)
+        email_entry = self._creer_label_entry(form, "Adresse mail :", 2, 0)
 
         def valider():
             nom = nom_entry.get().strip()
             prenom = prenom_entry.get().strip()
             email = email_entry.get().strip()
-
-            if not nom or not prenom or not email:
+            if not (nom and prenom and email):
                 afficher_message_temporaire("Tous les champs sont requis.")
                 return
-
             ajouter_utilisateur(nom, prenom, email)
             afficher_message_temporaire("Utilisateur ajouté avec succès.")
-            form.destroy()  # Supprime le formulaire après validation
-            self.formulaire = None
+            form.destroy()
+            self.formulaire_client = None
 
-        Bouton(form, "Valider", valider).grid(row=3, column=1, sticky="e", pady=10, padx=5)
-
+        Bouton(form, "Valider", valider).grid(row=3, column=1, sticky="e", pady=10)
         return form
 
-    def afficher_formulaire(self):
-        # Si formulaire déjà affiché, on ne fait rien
-        if self.formulaire is not None:
-            return
+    def creer_formulaire_salle(self):
+        form = Frame(self, bg=FOND_FENETRE)
+        nom_entry = self._creer_label_entry(form, "Nom de la salle :", 0, 0)
+        type_var, combobox = self._creer_label_entry(form, "Type de salle :", 1, 0, ["classique", "informatique", "conférence"])
+        capacite_var = IntVar()
+        capacite_entry = self._creer_label_entry(form, "Capacité :", 2, 0, var=capacite_var, width=5)
 
-        self.formulaire = self.creer_formulaire()
-        self.formulaire.grid(row=0, column=1, rowspan=3, padx=20, pady=10, sticky="nw")
+        def valider():
+            nom = nom_entry.get().strip()
+            t = type_var.get()
+            try:
+                capacite = int(capacite_entry.get())
+            except ValueError:
+                afficher_message_temporaire("Capacité doit être un nombre valide.")
+                return
+            if not nom:
+                afficher_message_temporaire("Le nom est requis.")
+                return
+            ajouter_salle(nom, t, capacite)
+            afficher_message_temporaire("Salle ajoutée avec succès.")
+            form.destroy()
+            self.formulaire_salle = None
 
-    def creer_champ_saisie(self, parent, label_texte):
-        frame = Frame(parent, bg=FOND_FENETRE)
-        frame.pack(pady=5)
-        Label(frame, text=label_texte, font=("Arial", 12), bg=FOND_FENETRE).pack(side=LEFT, padx=5)
-        entry = Entry(frame, width=40, bg=ZONE_SAISIE)
-        entry.pack(side=LEFT, padx=5)
-        return entry
+        Bouton(form, "Valider", valider).grid(row=3, column=1, sticky="e", pady=10)
+        return form
 
-    def afficher_formulaire_ajout(self):
-        if not self.formulaire_visible:
-            self.form_frame.pack(pady=10)
-            self.bouton_valider.pack(pady=10)
-            self.formulaire_visible = True
+    def creer_formulaire_id(self):
+        form = Frame(self, bg=FOND_FENETRE)
+        Label(form, text="Entrez votre adresse mail :", bg=FOND_FENETRE).grid(row=0, column=0, padx=5, pady=5)
+        email_entry = Entry(form, bg=ZONE_SAISIE)
+        email_entry.grid(row=0, column=1, padx=5, pady=5)
 
-    def ajouter_client_depuis_champs(self):
-        nom = self.nom_entry.get().strip()
-        prenom = self.prenom_entry.get().strip()
-        email = self.email_entry.get().strip()
+        def valider():
+            email = email_entry.get().strip()
+            if not email:
+                afficher_message_temporaire("Veuillez saisir une adresse mail.")
+                return
+            donnees = charger_donnees()
+            for utilisateur in donnees["utilisateurs"]:
+                if utilisateur["email"] == email:
+                    afficher_message_temporaire(f"Votre ID est : {utilisateur['id']}")
+                    form.destroy()
+                    self.formulaire_id = None
+                    return
+            afficher_message_temporaire("Adresse mail non trouvée.")
 
-        if not nom or not prenom or not email:
-            afficher_message_temporaire("Tous les champs sont requis.")
-            return
+        Bouton(form, "Valider", valider).grid(row=1, column=1, sticky="e", pady=10)
+        return form
 
-        ajouter_utilisateur(nom, prenom, email)
-        afficher_message_temporaire("Utilisateur ajouté avec succès.")
+    def afficher_formulaire(self, type_formulaire):
+        formulaires = {
+            "client": ("formulaire_client", self.creer_formulaire_client),
+            "salle": ("formulaire_salle", self.creer_formulaire_salle),
+            "id": ("formulaire_id", self.creer_formulaire_id)
+        }
+        for nom, _ in formulaires.values():
+            form = getattr(self, nom)
+            if form:
+                form.destroy()
+                setattr(self, nom, None)
 
-        self.nom_entry.delete(0, END)
-        self.prenom_entry.delete(0, END)
-        self.email_entry.delete(0, END)
-        self.form_frame.pack_forget()
-        self.formulaire_visible = False
-
+        nom, create = formulaires[type_formulaire]
+        new_form = create()
+        setattr(self, nom, new_form)
+        new_form.grid(row=0, column=1, rowspan=4, padx=20, pady=10, sticky="nw")
 
 class Reserver_salle(Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         super().__init__(parent, bg=FOND_FENETRE)
         Label(self, text="Réservation de salle", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
 
 class Reservations(Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         super().__init__(parent, bg=FOND_FENETRE)
         Label(self, text="Consultation des réservations", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
 
-def bouton_id():
-    # Renvoie l'id de l'utilisateur à l'aide de son adresse mail
-    adresse_mail = askstring("Saisie", "Quelle est votre adresse mail ?")
-    if adresse_mail is None:
-        return
-    donnees = charger_donnees()
-    for utilisateur in donnees["utilisateurs"]:
-        if utilisateur["email"] == adresse_mail:
-            afficher_message_temporaire(utilisateur["id"])
-            return
-     
-    afficher_message_temporaire("Cette adresse mail n'est pas enregistrée dans la base de données")
-
-def bouton_ajouter_salle():
-    # Bouton servant à ajouter un utilisateur
-    # A faire
-    None
-
 if __name__ == "__main__":
-    #creer_page_originale()
     app = Application()
     app.mainloop()
