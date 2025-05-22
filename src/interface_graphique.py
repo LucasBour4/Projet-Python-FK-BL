@@ -21,9 +21,9 @@ def afficher_message_temporaire(message : str, duree : int = 5000):
     popup.after(duree, popup.destroy)
 
 class Bouton(Button):
-    def __init__(self, master, texte : str, commande = None, couleur_fond : str = BOUTON_PRINCIPAL, couleur_texte : str ="white", police=("Arial", 12)):
+    def __init__(self, master, texte : str, commande = None, couleur_fond : str = BOUTON_PRINCIPAL, couleur_texte : str ="white", police=("Arial", 12), largeur : int = 20):
         super().__init__(master, text=texte, command=commande, background=couleur_fond, fg=couleur_texte, font=police)
-        self.config(width=20, height=2)
+        self.config(width=largeur, height=2)
 
 class Application(Tk):
     def __init__(self):
@@ -40,7 +40,7 @@ class Application(Tk):
         self.grid_rowconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (PageAccueil, Ajout_de_salle_et_client, Reserver_salle, Reservations):
+        for F in (PageAccueil, Ajout_de_salle_et_client, Reserver_salle, Afficher):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
@@ -50,7 +50,7 @@ class Application(Tk):
             ("Page d'accueil", "PageAccueil"),
             ("Ajout de salle et client", "Ajout_de_salle_et_client"),
             ("Réserver une salle", "Reserver_salle"),
-            ("Réservations", "Reservations")
+            ("Afficher", "Afficher")
         ]
 
         self.nav_buttons = {}
@@ -196,10 +196,30 @@ class Reserver_salle(Frame):
         super().__init__(parent, bg=FOND_FENETRE)
         Label(self, text="Réservation de salle", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
 
-class Reservations(Frame):
+class Afficher(Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, bg=FOND_FENETRE)
-        Label(self, text="Consultation des réservations", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
+        self.controller = controller
+
+        Label(self, text="Afficher", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
+
+        # Boutons d'affichage
+        Bouton(self, "Afficher la liste des salles", self.afficher_salles, largeur=36).pack(pady=5, padx=10, anchor="w")
+        Bouton(self, "Afficher la liste des clients", self.afficher_clients, largeur=36).pack(pady=5, padx=10, anchor="w")
+        Bouton(self, "Afficher les salles disponibles pour un créneau", self.afficher_salles_disponibles, largeur=36).pack(pady=5, padx=10, anchor="w")
+        Bouton(self, "Afficher les réservations par client", self.afficher_reservations_client, largeur=36).pack(pady=5, padx=10, anchor="w")
+
+    def afficher_salles(self):   
+        None
+
+    def afficher_clients(self):
+        None
+
+    def afficher_salles_disponibles(self):
+        None
+
+    def afficher_reservations_client(self):
+        None             
 
 if __name__ == "__main__":
     app = Application()
