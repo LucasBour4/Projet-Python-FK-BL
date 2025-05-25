@@ -252,10 +252,11 @@ class Afficher(Frame):
         else:
             for salle in salles:
                 nom = salle.get("nom", "Inconnu")
+                type_salle = salle.get("type", "N/A")
                 capacite = salle.get("capacite", "N/A")
                 Label(
                     contenu,
-                    text=f"• {nom} — Capacité : {capacite}",
+                    text=f"• {nom} - {type_salle} — Capacité : {capacite}",
                     font=("Arial", 11),
                     anchor="w",
                     bg=FOND_FENETRE

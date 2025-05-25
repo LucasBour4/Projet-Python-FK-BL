@@ -1,26 +1,62 @@
 import json
 import uuid
+from datetime import datetime, timedelta
 
 DATA_JSON = "src\\data.json"
 
-def charger_donnees():  
-    # Charge les utilisateurs à partir du fichier JSON
+def charger_donnees():
+    """Charge toutes les données depuis le fichier JSON."""
     try:
-        with open(DATA_JSON) as file:
-            return json.load(file)
-    except FileNotFoundError:
-        # Si le fichier n'existe pas, retourne une structure vide
-        return {"utilisateurs": []}
-    except json.JSONDecodeError:
-        # Si le fichier est vide ou mal formé, retourne une structure vide
-        return {"utilisateurs": []}
+        with open(DATA_JSON, "r", encoding="utf-8") as file:
+            donnees = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        donnees = {}
+
+    """Convertir les réservations au format datetime"""
+    if "reservations" in donnees:
+        donnees["reservations"] = convertir_dates_reservations_en_objets(donnees["reservations"])
+
+    return donnees
+    
     
 def enregistrer_donnees(donnees):
-    with open(DATA_JSON, 'w') as file:
-        json.dump(donnees, file)
+    """Sauvegarde toutes les données dans le fichier JSON."""
+    donnees_a_sauvegarder = dict(donnees)  # copie pour ne pas modifier l'original
+
+    if "reservations" in donnees_a_sauvegarder:
+        donnees_a_sauvegarder["reservations"] = convertir_dates_reservations_en_str(donnees_a_sauvegarder["reservations"])
+
+    with open(DATA_JSON, "w", encoding="utf-8") as file:
+        json.dump(donnees_a_sauvegarder, file, indent=4, ensure_ascii=False)
+
+def convertir_dates_reservations_en_objets(reservations):
+    """Convertit la clé 'debut' des réservations en chaîne de charactères vers datetime."""
+    resultat = []
+    for r in reservations:
+        copie = r.copy()
+        if isinstance(copie.get("debut"), str):
+            try:
+                copie["debut"] = datetime.fromisoformat(copie["debut"])
+            except ValueError:
+                copie["debut"] = None
+        resultat.append(copie)
+    return resultat
+
+
+def convertir_dates_reservations_en_str(reservations):
+    """Convertit la clé 'debut' des réservations de datetime en charactères."""
+    resultat = []
+    for r in reservations:
+        copie = r.copy()
+        if isinstance(copie.get("debut"), datetime):
+            copie["debut"] = copie["debut"].isoformat()
+        resultat.append(copie)
+    return resultat
+
+
 
 def ajouter_utilisateur(nom : str, prenom : str, adresse_mail : str): 
-    # Ajoute un nouvel utilisateur
+    # Ajoute un nouvel utilisateur au fichier JSON
     donnees = charger_donnees()
 
     if "utilisateurs" not in donnees:
@@ -41,8 +77,9 @@ def ajouter_utilisateur(nom : str, prenom : str, adresse_mail : str):
     donnees["utilisateurs"].append(nouveau_utilisateur)
     enregistrer_donnees(donnees)
 
+
 def ajouter_salle(nom : str, type : str, capacite : int):
-    # Ajoute une nouvelle salle   
+    # Ajoute une nouvelle salle au fichier JSON
     donnees = charger_donnees() 
 
     if "salles" not in donnees:
@@ -61,10 +98,3 @@ def ajouter_salle(nom : str, type : str, capacite : int):
 
     donnees["salles"].append(nouvelle_salle)
     enregistrer_donnees(donnees)
-    
-
-#ajouter_utilisateur("Ferry","Kevin","kevin.ferry@mail.com")
-#ajouter_utilisateur("Bour","Lucas","lucas.bour@mail.com")
-#print(charger_utilisateurs())
-#ajouter_salle("Salle 1","standard", 10)
-#print(charger_donnees())
