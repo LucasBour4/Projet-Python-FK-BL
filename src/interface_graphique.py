@@ -83,9 +83,9 @@ class Ajout_de_salle_et_client(Frame):
         super().__init__(parent, bg=FOND_FENETRE)
         self.controller = controller
 
-        Bouton(self, "Ajouter un nouveau client", lambda: self.afficher_formulaire("client")).grid(row=0, column=0, pady=10, padx=20, sticky="nw")
-        Bouton(self, "Vous avez oublié votre id ?", lambda: self.afficher_formulaire("id")).grid(row=1, column=0, pady=10, padx=20, sticky="nw")
-        Bouton(self, "Ajouter une nouvelle salle", lambda: self.afficher_formulaire("salle")).grid(row=2, column=0, pady=10, padx=20, sticky="nw")
+        Bouton(self, "Ajouter un nouveau client", lambda: self.afficher_formulaire("client"), largeur=28).grid(row=0, column=0, pady=10, padx=20, sticky="nw")
+        Bouton(self, "Vous avez oublié votre id ?", lambda: self.afficher_formulaire("id"), largeur=28).grid(row=1, column=0, pady=10, padx=20, sticky="nw")
+        Bouton(self, "Ajouter une nouvelle salle", lambda: self.afficher_formulaire("salle"), largeur=28).grid(row=2, column=0, pady=10, padx=20, sticky="nw")
 
         self.formulaire_client = None
         self.formulaire_salle = None
@@ -201,25 +201,109 @@ class Afficher(Frame):
         super().__init__(parent, bg=FOND_FENETRE)
         self.controller = controller
 
-        Label(self, text="Afficher", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
+        Label(self, text="Afficher", font=("Arial", 14), bg=FOND_FENETRE).grid(row=0, column=0, columnspan=2, pady=20, sticky="w")
 
         # Boutons d'affichage
-        Bouton(self, "Afficher la liste des salles", self.afficher_salles, largeur=36).pack(pady=5, padx=10, anchor="w")
-        Bouton(self, "Afficher la liste des clients", self.afficher_clients, largeur=36).pack(pady=5, padx=10, anchor="w")
-        Bouton(self, "Afficher les salles disponibles pour un créneau", self.afficher_salles_disponibles, largeur=36).pack(pady=5, padx=10, anchor="w")
-        Bouton(self, "Afficher les réservations par client", self.afficher_reservations_client, largeur=36).pack(pady=5, padx=10, anchor="w")
+        self.bouton_frame = Frame(self, bg=FOND_FENETRE)
+        self.bouton_frame.grid(row=1, column=0, sticky="nw", padx=10)
 
-    def afficher_salles(self):   
-        None
+        Bouton(self.bouton_frame, "Liste des salles", self.afficher_salles, largeur=27).pack(pady=5, anchor="w")
+        Bouton(self.bouton_frame, "Liste des clients", self.afficher_clients, largeur=27).pack(pady=5, anchor="w")
+        Bouton(self.bouton_frame, "Salles disponibles pour un créneau", self.afficher_salles_disponibles, largeur=27).pack(pady=5, anchor="w")
+        Bouton(self.bouton_frame, "Réservations par client", self.afficher_reservations_client, largeur=27).pack(pady=5, anchor="w")
+
+        # Colonne d'affichage
+        self.zone_affichage = Frame(self, bg=FOND_FENETRE)
+        self.zone_affichage.grid(row=1, column=1, sticky="nsew", padx=10, pady=10)
+
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+
+    def afficher_salles(self):
+        # Affiche la liste des salles enregistrées
+        for widget in self.zone_affichage.winfo_children():
+            widget.destroy()
+
+        # Chargement des données
+        salles = charger_donnees().get("salles", [])
+
+        # Création du canvas avec scrollbar
+        canvas = Canvas(self.zone_affichage, bg=FOND_FENETRE, highlightthickness=0)
+        scrollbar = Scrollbar(self.zone_affichage, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        contenu = Frame(canvas, bg=FOND_FENETRE)
+        canvas.create_window((0, 0), window=contenu, anchor="nw")
+
+        def ajuster_scroll(event):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+
+        contenu.bind("<Configure>", ajuster_scroll)
+
+        # Titre
+        Label(contenu, text="Liste des salles existantes :", font=("Arial", 14), bg=FOND_FENETRE, fg=TEXTE_TITRE).pack(pady=(0, 10))
+
+        # Liste des salles
+        if not salles:
+            Label(contenu, text="Aucune salle enregistrée.", font=("Arial", 12), bg=FOND_FENETRE).pack(pady=10)
+        else:
+            for salle in salles:
+                nom = salle.get("nom", "Inconnu")
+                capacite = salle.get("capacite", "N/A")
+                Label(
+                    contenu,
+                    text=f"• {nom} — Capacité : {capacite}",
+                    font=("Arial", 11),
+                    anchor="w",
+                    bg=FOND_FENETRE
+                ).pack(fill="x", padx=10, pady=5)
+
 
     def afficher_clients(self):
-        None
+        # Affiche la liste des clients enregistrés
+        for widget in self.zone_affichage.winfo_children():
+            widget.destroy()
+
+        # Chargement des données
+        clients = charger_donnees().get("utilisateurs", [])
+
+        # Création du canvas avec scrollbar
+        canvas = Canvas(self.zone_affichage, bg=FOND_FENETRE, highlightthickness=0)
+        scrollbar = Scrollbar(self.zone_affichage, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        contenu = Frame(canvas, bg=FOND_FENETRE)
+        canvas.create_window((0, 0), window=contenu, anchor="nw")
+
+        def ajuster_scroll(event):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+
+        contenu.bind("<Configure>", ajuster_scroll)
+
+        # Titre
+        Label(contenu, text="Liste des clients enregistrés :", font=("Arial", 14), bg=FOND_FENETRE, fg=TEXTE_TITRE).pack(pady=(0, 10))
+
+        # Liste des clients
+        if not clients:
+            Label(contenu, text="Aucun client enregistré.", font=("Arial", 12), bg=FOND_FENETRE).pack(pady=10)
+        else:
+            for c in clients:
+                nom, prenom, email = c.get("nom", "Inconnu"), c.get("prenom", ""), c.get("email", "")
+                Label(contenu, text=f"• {prenom} {nom} — Email : {email}", font=("Arial", 11), anchor="w", bg=FOND_FENETRE).pack(fill="x", padx=10, pady=5)
+
+
 
     def afficher_salles_disponibles(self):
-        None
+        pass
 
     def afficher_reservations_client(self):
-        None             
+        pass
 
 if __name__ == "__main__":
     app = Application()
