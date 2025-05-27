@@ -1,9 +1,17 @@
-# interface_graphique.py
-# -*- coding: utf-8 -*-
+""""
+interface_graphique.py:
+Fichier gérant l'interface graphique de l'application MeetingPro.
 
+Il permet de naviguer entre les différentes pages de l'application,
+d'afficher des formulaires pour ajouter des clients et des salles,
+et de gérer les réservations de salles.
+
+-*- coding: utf-8 -*-
+"""
+
+# Importation des modules nécessaires
 from tkinter import *
 from tkinter.ttk import Combobox
-from tkinter.simpledialog import askstring
 from gestion_base_donnees import *
 
 # Variables de style

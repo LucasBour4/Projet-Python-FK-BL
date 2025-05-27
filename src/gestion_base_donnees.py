@@ -1,3 +1,13 @@
+""""
+gestion_base_donnees.py:
+Fichier gérant la base de données (fichier Json) de l'application MeetingPro.
+
+Il permet de charger, enregistrer et manipuler les données des utilisateurs, des salles et des réservations.
+
+-*- coding: utf-8 -*-
+"""
+
+# Importation des modules nécessaires
 import json
 import uuid
 from datetime import datetime, timedelta
