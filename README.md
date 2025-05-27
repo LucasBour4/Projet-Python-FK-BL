@@ -14,22 +14,22 @@ Elle prend en charge la création de salles, l’enregistrement des utilisateurs
 
 ## 🔧 Fonctionnalités principales
 
-## Création et suppression de salles de réunion
+- Création et suppression de salles de réunion
 
-## Ajout et gestion des utilisateurs
+- Ajout et gestion des utilisateurs
 
-## Réservation de salle avec :
- - Choix de l’utilisateur
- - Choix de la salle
- - Date et heure de début
+- Réservation de salle avec :
+ -- Choix de l’utilisateur
+ -- Choix de la salle
+ -- Date et heure de début
 
-## Durée de la réservation
+- Durée de la réservation
 
-## Détection des conflits de réservation
+- Détection des conflits de réservation
 
-## Affichage des listes de clients, salles, et réservations
+- Affichage des listes de clients, salles, et réservations
 
-## Interface simple et fluide avec Tkinter
+- Interface simple et fluide avec Tkinter
 
 
 # Install
@@ -48,5 +48,3 @@ python mon_projet/main.py
 # Generate documentation
 
 See the documentation [here](doc/intro.txt)
-
-## Mon Titre 2
