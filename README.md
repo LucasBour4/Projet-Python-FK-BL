@@ -7,10 +7,29 @@
 
 ## 🧠 Description du projet
 
-MeetingPro est une application en Python destinée à l’entreprise fictive **MeetingPro**, spécialisée dans la location d’espaces de coworking.  
-Elle permet de **gérer la réservation de plusieurs types de salles** via une **interface graphique simple**, en utilisant des fichiers **JSON** pour stocker les données de manière persistante.
+MeetingPro est une application Python qui permet la gestion des réservations de salles de réunion à travers une interface graphique.
+Elle prend en charge la création de salles, l’enregistrement des utilisateurs, et la réservation d’horaires précis, avec une sauvegarde des données en JSON.
 
-Cette application est développée dans le cadre du projet AOO Python 2025.
+
+
+## 🔧 Fonctionnalités principales
+
+## Création et suppression de salles de réunion
+
+## Ajout et gestion des utilisateurs
+
+## Réservation de salle avec :
+ - Choix de l’utilisateur
+ - Choix de la salle
+ - Date et heure de début
+
+## Durée de la réservation
+
+## Détection des conflits de réservation
+
+## Affichage des listes de clients, salles, et réservations
+
+## Interface simple et fluide avec Tkinter
 
 
 # Install
