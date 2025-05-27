@@ -22,6 +22,7 @@ Elle prend en charge la création de salles, l’enregistrement des utilisateurs
  -- Choix de l’utilisateur
  -- Choix de la salle
  -- Date et heure de début
+ --
 
 - Durée de la réservation
 

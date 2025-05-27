@@ -1,0 +1,63 @@
+==============================
+MeetingPro – Guide d’introduction
+==============================
+
+Présentation :
+--------------
+MeetingPro est une application Python de gestion de réservation de salles, utilisant une interface graphique (Tkinter) et un stockage local des données via JSON.
+
+L'objectif est de faciliter la réservation de salles de réunion.
+
+
+Fonctionnalités principales :
+-----------------------------
+- Ajouter des utilisateurs (clients)
+- Ajouter des salles avec leur type et capacité
+- Réserver une salle selon une salle, un nombre de personnes, une date et heure de début et  une durée
+- Visualiser les utilisateurs, salles, et réservations enregistrées
+
+Format de données :
+-------------------
+Toutes les données sont stockées dans le fichier `data.json` :
+
+{
+  "utilisateurs": [
+    {
+      "id": "UUID",
+      "nom": "Nom",
+      "prenom": "Prénom",
+      "email": "adresse@mail.com"
+    }
+  ],
+  "salles": [
+    {
+      "nom": "Salle 1",
+      "type": "standard",
+      "capacite": 10
+    }
+  ],
+  "reservations": [
+    {
+      "id_utilisateur": "UUID",
+      "nom_salle": "Salle 1",
+      "debut": "2024-06-01T09:00:00",
+      "duree": 60
+    }
+  ]
+}
+
+Utilisation :
+-------------
+- Lancer `main.py`
+- Ajouter des utilisateurs et des salles depuis l’interface
+- Réaliser des réservations en choisissant l’utilisateur, la salle et les horaires
+
+Pré-requis :
+------------
+- Python 3.x
+- Bibliothèques standard uniquement (Tkinter, JSON, datetime)
+
+Auteurs :
+---------
+- Kevin Ferry
+- Lucas Bour
