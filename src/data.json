@@ -1,1 +1,62 @@
-{"utilisateurs": [{"id": "a8f0f040-c99f-4856-b17d-afd43c793d7c", "nom": "Ferry", "prenom": "Kevin", "email": "kevin.ferry@mail.com"}, {"id": "06e57574-0146-497e-97f4-cac4235a6226", "nom": "Bour", "prenom": "Lucas", "email": "lucas.bour@mail.com"}, {"id": "cf26c960-fe1d-4809-b964-c9a2edfbe622", "nom": null, "prenom": null, "email": null}, {"id": "8687ef00-a53d-4c18-863c-9e6517d14d7d", "nom": "Delory", "prenom": "Antoine", "email": "antoine.delory@mail.com"}, {"id": "11c4b0af-fe63-4dd1-b580-3876f50000c4", "nom": "", "prenom": "", "email": ""}, {"id": "54bbaf62-1fa6-4c08-a26b-bbde817d5939", "nom": "lemarechal", "prenom": "lou", "email": "lou.lemarechal@mail.com"}], "salles": [{"nom": "Apollon", "type": "classique", "capacite": 4}, {"nom": "Zeus", "type": "conf\u00e9rence", "capacite": 10}, {"nom": "Hades", "type": "informatique", "capacite": 3}, {"nom": "Athena", "type": "conf\u00e9rence", "capacite": 8}]}
+{
+    "utilisateurs": [
+        {
+            "id": "a8f0f040-c99f-4856-b17d-afd43c793d7c",
+            "nom": "Ferry",
+            "prenom": "Kevin",
+            "email": "kevin.ferry@mail.com"
+        },
+        {
+            "id": "06e57574-0146-497e-97f4-cac4235a6226",
+            "nom": "Bour",
+            "prenom": "Lucas",
+            "email": "lucas.bour@mail.com"
+        },
+        {
+            "id": "cf26c960-fe1d-4809-b964-c9a2edfbe622",
+            "nom": null,
+            "prenom": null,
+            "email": null
+        },
+        {
+            "id": "8687ef00-a53d-4c18-863c-9e6517d14d7d",
+            "nom": "Delory",
+            "prenom": "Antoine",
+            "email": "antoine.delory@mail.com"
+        },
+        {
+            "id": "11c4b0af-fe63-4dd1-b580-3876f50000c4",
+            "nom": "",
+            "prenom": "",
+            "email": ""
+        },
+        {
+            "id": "54bbaf62-1fa6-4c08-a26b-bbde817d5939",
+            "nom": "lemarechal",
+            "prenom": "lou",
+            "email": "lou.lemarechal@mail.com"
+        }
+    ],
+    "salles": [
+        {
+            "nom": "Apollon",
+            "type": "classique",
+            "capacite": 4
+        },
+        {
+            "nom": "Zeus",
+            "type": "conf\u00e9rence",
+            "capacite": 10
+        },
+        {
+            "nom": "Hades",
+            "type": "informatique",
+            "capacite": 3
+        },
+        {
+            "nom": "Athena",
+            "type": "conf\u00e9rence",
+            "capacite": 8
+        }
+    ]
+}
