@@ -6,6 +6,7 @@ from tkinter import ttk
 from tkinter.simpledialog import askstring
 from gestion_base_donnees import *
 
+
 # https://python.doctor/page-tkinter-interface-graphique-python-tutoriel
 # https://stackoverflow.com/questions/22925599/mouse-position-python-tkinter
 
@@ -96,6 +97,9 @@ def specificites_page(role):
     elif role == "Ajouter une nouvelle salle":
         couleur_bouton = "#2E8B57"
         creer_bouton("Ajouter une nouvelle salle", lambda : bouton_ajouter_salle(), couleur_bouton)
+    elif role == "Réserver une salle":
+        couleur_bouton = "#2B39BB"
+        creer_bouton("Réserver une salle", lambda: bouton_reserver_salle(), couleur_bouton)
 
 def bouton_ajouter_utilisateur():
     # Bouton servant à ajouter un utilisateur
@@ -121,10 +125,117 @@ def bouton_id():
      
     afficher_message_temporaire("Cette adresse mail n'est pas enregistrée dans la base de données")
 
-def bouton_ajouter_salle():
-    # Bouton servant à ajouter un utilisateur
-    # A faire
-    None
 
+def bouton_reserver_salle():
+    # Bouton servant à réserver une salle
+    nom_client = askstring("Saisie", "Quel est votre nom ?")
+    date_reservation = askstring("Saisie", "Entrez la date de réservation (YYYY-MM-DD) :")
+    heure_reservation = askstring("Saisie", "Entrez l'heure de réservation (HH:MM) :")
+    nom_salle = askstring("Saisie", "Nom de la salle à réserver :")
+
+    if not nom_client or not date_reservation or not heure_reservation or not nom_salle:
+        afficher_message_temporaire("Veuillez remplir tous les champs.")
+        return
+
+    try:
+        # Charger les données des salles depuis la base de données
+        donnees = charger_donnees()
+        salles = donnees.get("salles", [])
+
+        # Vérifier si la salle existe
+        salle_disponible = next((salle for salle in salles if salle["nom"] == nom_salle), None)
+        if not salle_disponible:
+            afficher_message_temporaire("La salle spécifiée n'existe pas.")
+            return
+
+        # Créer une réservation
+        reservation = Reservation(
+            reservation_id=len(donnees.get("reservations", [])) + 1,
+            customer_name=nom_client,
+            date=date_reservation,
+            time=heure_reservation
+        )
+
+        # Vérifier si la salle est disponible
+        if not reservation.is_room_available(salle_disponible):
+            afficher_message_temporaire("La salle n'est pas disponible pour ce créneau.")
+            return
+
+        # Ajouter la salle à la réservation
+        reservation.room.append(salle_disponible)
+
+        # Enregistrer la réservation dans la base de données
+        if "reservations" not in donnees:
+            donnees["reservations"] = []
+        donnees["reservations"].append({
+            "id": reservation.reservation_id,
+            "client": reservation.customer_name,
+            "date": reservation.date,
+            "heure": reservation.time,
+            "salle": nom_salle
+        })
+        enregistrer_donnees(donnees)
+
+        afficher_message_temporaire("Réservation effectuée avec succès.")
+    except ReservationError as e:
+        afficher_message_temporaire(f"Erreur : {e.message}")
+    except ValueError:
+        afficher_message_temporaire("Format de date ou d'heure invalide.")
+
+def bouton_ajouter_salle():
+    # Bouton servant à ajouter une salle
+    nom_salle = askstring("Saisie", "Nom de la salle :")
+    type_salle = askstring("Saisie", "Type de la salle (ex : standard, conférence, etc.) :")
+
+    if not nom_salle or not type_salle:
+        afficher_message_temporaire("Veuillez remplir tous les champs.")
+        return
+
+    try:
+        # Ajouter la salle dans la base de données
+        ajouter_salle(nom_salle, type_salle)
+        afficher_message_temporaire("Salle ajoutée avec succès.")
+    except Exception as e:
+        afficher_message_temporaire(f"Erreur : {str(e)}")
+
+def bouton_afficher_salles_disponibles():
+    # Bouton servant à afficher les salles disponibles pour un créneau
+    date_reservation = askstring("Saisie", "Entrez la date de réservation (YYYY-MM-DD) :")
+    heure_reservation = askstring("Saisie", "Entrez l'heure de réservation (HH:MM) :")
+
+    if not date_reservation or not heure_reservation:
+        afficher_message_temporaire("Veuillez remplir tous les champs.")
+        return
+
+    try:
+        # Charger les données depuis la base de données
+        donnees = charger_donnees()
+        salles = donnees.get("salles", [])
+        reservations = donnees.get("reservations", [])
+
+        # Vérifier les salles disponibles
+        salles_disponibles = []
+        for salle in salles:
+            # Vérifie si la salle est réservée pour le créneau donné
+            est_reservee = any(
+                reservation["salle"] == salle["nom"] and
+                reservation["date"] == date_reservation and
+                reservation["heure"] == heure_reservation
+                for reservation in reservations
+            )
+            if not est_reservee:
+                salles_disponibles.append(salle["nom"])
+
+        # Afficher les salles disponibles
+        popup = Toplevel()
+        popup.title("Salles disponibles")
+        if salles_disponibles:
+            message = "Salles disponibles pour le créneau :\n" + "\n".join(salles_disponibles)
+        else:
+            message = "Aucune salle disponible pour ce créneau."
+        Label(popup, text=message, font=("Arial", 12)).pack(padx=20, pady=20)
+        Button(popup, text="Fermer", command=popup.destroy).pack(pady=10)
+    except Exception as e:
+        afficher_message_temporaire(f"Erreur : {str(e)}")
 
 creer_page_originale()
