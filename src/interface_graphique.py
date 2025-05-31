@@ -243,7 +243,7 @@ class Ajout_de_salle_et_client(Frame):
 
 
 class Reserver_salle(Frame):
-    """Page de réservation (placeholder)."""
+    """Page de réservation."""
 
     def __init__(self, parent: Frame, controller: Application) -> None:
         super().__init__(parent, bg=FOND_FENETRE)
