@@ -103,6 +103,23 @@ class PageAccueil(Frame):
         super().__init__(parent, bg=FOND_FENETRE)
         Label(self, text="Bienvenue sur MeetingPro !", font=(
             "Arial", 14), fg=TEXTE_TITRE, bg=FOND_FENETRE).pack(pady=20)
+        
+        Label(self, text=(
+            "MeetingPro est une application Python qui permet la gestion des réservations "
+            "de salles de \nréunion à travers une interface graphique.\n\n"
+            "Elle prend en charge la création de salles, l’enregistrement des utilisateurs, "
+            "et la réservation d’horaires précis,\navec une sauvegarde des données en JSON.\n\n\n\n" \
+            "Vous trouverez à gauche un menu de navigation pour accéder aux différentes fonctionnalités\nde l'application tel que:\n" \
+            "   - Ajoute de salle ou client: qui permet d'ajouter de nouveaux clients ou de nouvelles salles\n" \
+            "   - Réserver une salle: qui permet comme son nom l'indique de réserver une salle de réunion\n"
+            "   - Afficher: qui permet d'afficher les listes des clients enregistrées, des salles existantes ainsi \n     que des réservations." \
+        ),
+            wraplength=700,
+            justify="left",
+            font=("Arial", 12),
+            bg=FOND_FENETRE,
+            fg="#333333"
+        ).pack(padx=20, pady=10)
 
 
 class Ajout_de_salle_et_client(Frame):
