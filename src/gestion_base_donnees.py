@@ -89,6 +89,9 @@ def ajouter_utilisateur(nom: str, prenom: str, adresse_mail: str) -> None:
     donnees["utilisateurs"].append(nouveau_utilisateur)
     enregistrer_donnees(donnees)
 
+    else:
+        return
+
 
 def ajouter_salle(nom: str, type: str, capacite: int) -> None:
     """Ajoute une nouvelle salle au fichier JSONsi une salle du même nom n'existe pas déjà."""
@@ -109,3 +112,6 @@ def ajouter_salle(nom: str, type: str, capacite: int) -> None:
 
     donnees["salles"].append(nouvelle_salle)
     enregistrer_donnees(donnees)
+
+    else:
+        return
