@@ -89,9 +89,6 @@ def ajouter_utilisateur(nom: str, prenom: str, adresse_mail: str) -> None:
     donnees["utilisateurs"].append(nouveau_utilisateur)
     enregistrer_donnees(donnees)
 
-    else:
-        return
-
 
 def ajouter_salle(nom: str, type: str, capacite: int) -> None:
     """Ajoute une nouvelle salle au fichier JSONsi une salle du même nom n'existe pas déjà."""
@@ -113,5 +110,48 @@ def ajouter_salle(nom: str, type: str, capacite: int) -> None:
     donnees["salles"].append(nouvelle_salle)
     enregistrer_donnees(donnees)
 
-    else:
-        return
+
+def ajouter_reservation(reservation: dict):
+    """
+    Ajoute une nouvelle réservation.
+    """
+    donnees = charger_donnees()
+
+    debut_nouvelle = reservation["debut"]
+    fin_nouvelle = debut_nouvelle + timedelta(minutes=reservation["duree"])
+
+    if verifier_chevauchement(donnees.get("reservations", []), reservation):
+        raise Exception(
+            "Cette salle est déjà réservée pendant cet intervalle.")
+
+    # Ajout de la réservation
+    donnees.setdefault("reservations", []).append(reservation)
+    enregistrer_donnees(donnees)
+
+    from datetime import datetime, timedelta
+
+
+def verifier_chevauchement(reservations, nouvelle_reservation) -> bool:
+    """
+    Vérifie si la nouvelle réservation chevauche une réservation existante.
+    """
+    debut_nouvelle = nouvelle_reservation["debut"]
+    fin_nouvelle = debut_nouvelle + \
+        timedelta(minutes=nouvelle_reservation["duree"])
+    salle_nouvelle = nouvelle_reservation["salle"]
+
+    for res in reservations:
+        if res["salle"] != salle_nouvelle:
+            continue  # On vérifie pour une même salle
+
+        debut_existante = res["debut"]
+        if isinstance(debut_existante, str):
+            debut_existante = datetime.fromisoformat(debut_existante)
+
+        fin_existante = debut_existante + timedelta(minutes=res["duree"])
+
+        # Test de non-chevauchement :
+        if not (fin_nouvelle <= debut_existante or debut_nouvelle >= fin_existante):
+            return True  # Chevauchement détecté
+
+    return False  # Pas de chevauchement
