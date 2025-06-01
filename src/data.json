@@ -13,22 +13,10 @@
             "email": "lucas.bour@mail.com"
         },
         {
-            "id": "cf26c960-fe1d-4809-b964-c9a2edfbe622",
-            "nom": null,
-            "prenom": null,
-            "email": null
-        },
-        {
             "id": "8687ef00-a53d-4c18-863c-9e6517d14d7d",
             "nom": "Delory",
             "prenom": "Antoine",
             "email": "antoine.delory@mail.com"
-        },
-        {
-            "id": "11c4b0af-fe63-4dd1-b580-3876f50000c4",
-            "nom": "",
-            "prenom": "",
-            "email": ""
         },
         {
             "id": "54bbaf62-1fa6-4c08-a26b-bbde817d5939",
@@ -45,7 +33,7 @@
         },
         {
             "nom": "Zeus",
-            "type": "conf\u00e9rence",
+            "type": "conférence",
             "capacite": 10
         },
         {
@@ -55,83 +43,133 @@
         },
         {
             "nom": "Athena",
-            "type": "conf\u00e9rence",
+            "type": "conférence",
             "capacite": 8
         },
         {
-        "nom": "Hermès",
-        "type": "classique",
-        "capacite": 2
+            "nom": "Hermès",
+            "type": "classique",
+            "capacite": 2
+        },
+        {
+            "nom": "Arès",
+            "type": "classique",
+            "capacite": 4
+        },
+        {
+            "nom": "Hestia",
+            "type": "classique",
+            "capacite": 3
+        },
+        {
+            "nom": "Eros",
+            "type": "classique",
+            "capacite": 1
+        },
+        {
+            "nom": "Gaïa",
+            "type": "classique",
+            "capacite": 4
+        },
+        {
+            "nom": "Hypnos",
+            "type": "informatique",
+            "capacite": 3
+        },
+        {
+            "nom": "Chronos",
+            "type": "informatique",
+            "capacite": 2
+        },
+        {
+            "nom": "Nyx",
+            "type": "informatique",
+            "capacite": 4
+        },
+        {
+            "nom": "Thanatos",
+            "type": "informatique",
+            "capacite": 1
+        },
+        {
+            "nom": "Morphee",
+            "type": "informatique",
+            "capacite": 3
+        },
+        {
+            "nom": "Héra",
+            "type": "conférence",
+            "capacite": 6
+        },
+        {
+            "nom": "Dionysos",
+            "type": "conférence",
+            "capacite": 8
+        },
+        {
+            "nom": "Poséidon",
+            "type": "conférence",
+            "capacite": 10
+        },
+        {
+            "nom": "Déméter",
+            "type": "conférence",
+            "capacite": 7
+        },
+        {
+            "nom": "Artémis",
+            "type": "conférence",
+            "capacite": 9
+        }
+    ],
+    "reservations": [
+        {
+            "id": "c32fdbae-a933-47c4-8e2f-d52b9aa22dae",
+            "email": "lucas.bour@mail.com",
+            "salle": "Apollon",
+            "debut": "2025-06-01T16:00:00",
+            "duree_minutes": 40,
+            "nb_personnes": 1
+        },
+        {
+        "id": "1a2b3c4d-0000-0000-0000-000000000001",
+        "email": "lucas.bour@mail.com",
+        "salle": "Apollon",
+        "debut": "2025-06-01T16:00:00",
+        "duree_minutes": 40,
+        "nb_personnes": 1
     },
     {
-        "nom": "Arès",
-        "type": "classique",
-        "capacite": 4
+        "id": "2b3c4d5e-0000-0000-0000-000000000002",
+        "email": "lucas.bour@mail.com",
+        "salle": "Hermès",
+        "debut": "2025-06-02T09:30:00",
+        "duree_minutes": 60,
+        "nb_personnes": 3
     },
     {
-        "nom": "Hestia",
-        "type": "classique",
-        "capacite": 3
+        "id": "3c4d5e6f-0000-0000-0000-000000000003",
+        "email": "kevin.ferry@mail.com",
+        "salle": "Apollon",
+        "debut": "2025-06-03T14:00:00",
+        "duree_minutes": 30,
+        "nb_personnes": 2
     },
     {
-        "nom": "Eros",
-        "type": "classique",
-        "capacite": 1
+        "id": "4d5e6f7a-0000-0000-0000-000000000004",
+        "email": "kevin.ferry@mail.com",
+        "salle": "Athéna",
+        "debut": "2025-06-04T11:00:00",
+        "duree_minutes": 45,
+        "nb_personnes": 4
     },
     {
-        "nom": "Gaïa",
-        "type": "classique",
-        "capacite": 4
-    },
-    {
-        "nom": "Hypnos",
-        "type": "informatique",
-        "capacite": 3
-    },
-    {
-        "nom": "Chronos",
-        "type": "informatique",
-        "capacite": 2
-    },
-    {
-        "nom": "Nyx",
-        "type": "informatique",
-        "capacite": 4
-    },
-    {
-        "nom": "Thanatos",
-        "type": "informatique",
-        "capacite": 1
-    },
-    {
-        "nom": "Morphee",
-        "type": "informatique",
-        "capacite": 3
-    },
-    {
-        "nom": "Héra",
-        "type": "conférence",
-        "capacite": 6
-    },
-    {
-        "nom": "Dionysos",
-        "type": "conférence",
-        "capacite": 8
-    },
-    {
-        "nom": "Poséidon",
-        "type": "conférence",
-        "capacite": 10
-    },
-    {
-        "nom": "Déméter",
-        "type": "conférence",
-        "capacite": 7
-    },
-    {
-        "nom": "Artémis",
-        "type": "conférence",
-        "capacite": 9
+        "id": "5e6f7a8b-0000-0000-0000-000000000005",
+        "email": "lucas.bour@mail.com",
+        "salle": "Hermès",
+        "debut": "2025-06-05T15:15:00",
+        "duree_minutes": 90,
+        "nb_personnes": 5
     }
     ]
 }

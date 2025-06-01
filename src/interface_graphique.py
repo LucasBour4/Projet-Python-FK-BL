@@ -296,30 +296,26 @@ class Reserver_salle(Frame):
 
     def __init__(self, parent: Frame, controller: Application) -> None:
         super().__init__(parent, bg=FOND_FENETRE)
-        Label(self, text="Réservation de salle", font=(
-            "Arial", 14), bg=FOND_FENETRE).pack(pady=20)
+        Label(self, text="Réservation de salle", font=("Arial", 14), bg=FOND_FENETRE).pack(pady=20)
 
         form = Frame(self, bg=FOND_FENETRE)
         form.pack(pady=10)
 
         # Adresse mail client
-        Label(form, text="Votre adresse mail :", bg=FOND_FENETRE).grid(
-            row=0, column=0, sticky="w", padx=10, pady=5)
+        Label(form, text="Votre adresse mail :", bg=FOND_FENETRE).grid(row=0, column=0, sticky="w", padx=10, pady=5)
         self.email_entry = Entry(form, bg=ZONE_SAISIE)
         self.email_entry.grid(row=0, column=1, sticky="w", padx=10, pady=5)
 
-        # Type de salle (Combobox)
-        Label(form, text="Type de salle :", bg=FOND_FENETRE).grid(
-            row=1, column=0, sticky="w", padx=10, pady=5)
+        # Type de salle
+        Label(form, text="Type de salle :", bg=FOND_FENETRE).grid(row=1, column=0, sticky="w", padx=10, pady=5)
         self.type_salle_var = StringVar()
         self.type_salle_cb = Combobox(form, textvariable=self.type_salle_var, state="readonly",
                                       values=["classique", "conférence", "informatique"])
         self.type_salle_cb.grid(row=1, column=1, sticky="w", padx=10, pady=5)
         self.type_salle_cb.current(0)
 
-        # Nombre de personnes (Combobox de 1 à 10)
-        Label(form, text="Nombre de personnes :", bg=FOND_FENETRE).grid(
-            row=2, column=0, sticky="w", padx=10, pady=5)
+        # Nombre de personnes
+        Label(form, text="Nombre de personnes :", bg=FOND_FENETRE).grid(row=2, column=0, sticky="w", padx=10, pady=5)
         self.nb_personnes_var = StringVar()
         self.nb_personnes_cb = Combobox(form, textvariable=self.nb_personnes_var, state="readonly",
                                         values=[str(i) for i in range(1, 11)])
@@ -327,27 +323,22 @@ class Reserver_salle(Frame):
         self.nb_personnes_cb.current(0)
 
         # Jour
-        Label(form, text="Jour (YYYY-MM-DD) :", bg=FOND_FENETRE).grid(row=3,
-                                                                      column=0, sticky="w", padx=10, pady=5)
+        Label(form, text="Jour (YYYY-MM-DD) :", bg=FOND_FENETRE).grid(row=3, column=0, sticky="w", padx=10, pady=5)
         self.jour_entry = Entry(form, bg=ZONE_SAISIE)
         self.jour_entry.grid(row=3, column=1, sticky="w", padx=10, pady=5)
 
         # Heure de début
-        Label(form, text="Heure de début (HH:MM) :", bg=FOND_FENETRE).grid(
-            row=4, column=0, sticky="w", padx=10, pady=5)
+        Label(form, text="Heure de début (HH:MM) :", bg=FOND_FENETRE).grid(row=4, column=0, sticky="w", padx=10, pady=5)
         self.heure_debut_entry = Entry(form, bg=ZONE_SAISIE)
-        self.heure_debut_entry.grid(
-            row=4, column=1, sticky="w", padx=10, pady=5)
+        self.heure_debut_entry.grid(row=4, column=1, sticky="w", padx=10, pady=5)
 
-        # Durée
-        Label(form, text="Durée (HH:MM) :", bg=FOND_FENETRE).grid(
-            row=5, column=0, sticky="w", padx=10, pady=5)
+        # Durée (en minutes)
+        Label(form, text="Durée (en minutes) :", bg=FOND_FENETRE).grid(row=5, column=0, sticky="w", padx=10, pady=5)
         self.duree_entry = Entry(form, bg=ZONE_SAISIE)
         self.duree_entry.grid(row=5, column=1, sticky="w", padx=10, pady=5)
 
-        # Bouton valider
-        Bouton(self, "Valider la réservation",
-               self.valider_reservation).pack(pady=10)
+        # Bouton de validation
+        Bouton(self, "Valider la réservation", self.valider_reservation).pack(pady=10)
 
     def valider_reservation(self) -> None:
         email = self.email_entry.get().strip()
@@ -363,22 +354,19 @@ class Reserver_salle(Frame):
 
         try:
             nb_personnes = int(nb_personnes_str)
+            duree_minutes = int(duree)
         except ValueError:
-            afficher_message_temporaire("Nombre de personnes invalide.")
+            afficher_message_temporaire("Nombre de personnes ou durée invalide.")
             return
 
         try:
-            # Compose datetime de début à partir de jour + heure_debut (ex : "2023-06-01T18:30")
             debut = datetime.fromisoformat(f"{jour}T{heure_debut}")
-
-            # Convertir durée HH:MM en timedelta
-            heures, minutes = map(int, duree.split(":"))
-            duree_timedelta = dt_timedelta(hours=heures, minutes=minutes)
+            duree_timedelta = dt_timedelta(minutes=duree_minutes)
 
             donnees = charger_donnees()
             salles = donnees.get("salles", [])
 
-            # Recherche salle correspondant au type et capacité >= nb_personnes
+            # Recherche d'une salle disponible
             salle_choisie = None
             for salle in salles:
                 if salle["type"] == type_salle and salle["capacite"] >= nb_personnes:
@@ -386,11 +374,10 @@ class Reserver_salle(Frame):
                     break
 
             if not salle_choisie:
-                afficher_message_temporaire(
-                    "Aucune salle disponible correspondant au type et capacité demandés.")
+                afficher_message_temporaire("Aucune salle disponible correspondant au type et capacité demandés.")
                 return
 
-            # Vérifier que le client existe
+            # Vérification de l'existence du client
             utilisateurs = donnees.get("utilisateurs", [])
             client_trouve = any(u["email"] == email for u in utilisateurs)
             if not client_trouve:
@@ -402,19 +389,18 @@ class Reserver_salle(Frame):
                 "email": email,
                 "salle": salle_choisie["nom"],
                 "debut": debut,
-                "duree_minutes": int(duree_timedelta.total_seconds() / 60),
+                "duree_minutes": duree_minutes,
                 "nb_personnes": nb_personnes,
             }
 
             ajouter_reservation(reservation)
 
-            # Résumé des informations de réservation
             resume = (
                 f"Réservation confirmée:\n"
                 f"- Email : {email}\n"
                 f"- Salle : {salle_choisie['nom']} (Type : {type_salle})\n"
                 f"- Date et heure : {debut.strftime('%d/%m/%Y à %H:%M')}\n"
-                f"- Durée : {duree} (HH:MM)\n"
+                f"- Durée : {duree_minutes} minutes\n"
                 f"- Nombre de personnes : {nb_personnes}"
             )
             afficher_message_temporaire(resume)
@@ -422,8 +408,8 @@ class Reserver_salle(Frame):
         except ValueError:
             afficher_message_temporaire("Format de date ou heure invalide.")
         except Exception as e:
-            afficher_message_temporaire(
-                f"Erreur lors de la réservation : {str(e)}")
+            afficher_message_temporaire(f"Erreur lors de la réservation : {str(e)}")
+
 
 
 class Afficher(Frame):
@@ -514,9 +500,106 @@ class Afficher(Frame):
                 ).pack(fill="x", padx=10, pady=5)
 
     def afficher_salles_disponibles(self) -> None:
-        """Affiche les salles disponibles pour un créneau"""
-        pass
+        """Affiche les salles disponibles pour un créneau donné."""
+        for widget in self.zone_affichage.winfo_children():
+            widget.destroy()
+
+        contenu = creer_scrollbar(self.zone_affichage, bg=FOND_FENETRE)
+        Label(contenu, text="Salles disponibles :", font=("Arial", 14),
+            bg=FOND_FENETRE, fg=TEXTE_TITRE).pack(pady=(0, 10))
+
+        form = Frame(contenu, bg=FOND_FENETRE)
+        form.pack(pady=5)
+
+        jour_entry = Entry(form, bg=ZONE_SAISIE)
+        heure_entry = Entry(form, bg=ZONE_SAISIE)
+        duree_entry = Entry(form, bg=ZONE_SAISIE)
+
+        Label(form, text="Jour (YYYY-MM-DD):", bg=FOND_FENETRE).grid(row=0, column=0, sticky="w")
+        jour_entry.grid(row=0, column=1)
+        Label(form, text="Heure (HH:MM):", bg=FOND_FENETRE).grid(row=1, column=0, sticky="w")
+        heure_entry.grid(row=1, column=1)
+        Label(form, text="Durée (en minutes):", bg=FOND_FENETRE).grid(row=2, column=0, sticky="w")
+        duree_entry.grid(row=2, column=1)
+
+        def valider():
+            try:
+                debut = datetime.fromisoformat(f"{jour_entry.get()}T{heure_entry.get()}")
+                duree_minutes = int(duree_entry.get())
+                fin = debut + timedelta(minutes=duree_minutes)
+
+                data = charger_donnees()
+                reservations = data.get("reservations", [])
+
+                occupées = {
+                    r["salle"]
+                    for r in reservations
+                    if not (
+                        fin <= datetime.fromisoformat(r["debut"]) or
+                        debut >= datetime.fromisoformat(r["debut"]) + timedelta(minutes=r["duree_minutes"])
+                    )
+                }
+
+                dispo = [s for s in data.get("salles", []) if s["nom"] not in occupées]
+
+                Label(contenu, text="Résultats :", font=("Arial", 13), bg=FOND_FENETRE).pack(pady=10)
+                if not dispo:
+                    Label(contenu, text="Aucune salle disponible.", bg=FOND_FENETRE).pack()
+                else:
+                    for s in dispo:
+                        Label(
+                            contenu,
+                            text=f"• {s['nom']} - {s['type']} — Capacité : {s['capacite']}",
+                            bg=FOND_FENETRE,
+                            font=("Arial", 11)
+                        ).pack(anchor="w", padx=10, pady=2)
+
+            except ValueError:
+                Label(contenu, text="Veuillez saisir une durée en minutes valide.", fg="red", bg=FOND_FENETRE).pack(pady=10)
+            except Exception as e:
+                Label(contenu, text=f"Erreur : {e}", fg="red", bg=FOND_FENETRE).pack(pady=10)
+
+        Bouton(form, "Valider", valider).grid(row=3, column=1, pady=10, sticky="e")
+
 
     def afficher_reservations_client(self) -> None:
-        """Affiche les réservations d’un client donné."""
-        pass
+        """Affiche les réservations d’un client (via son email)."""
+        for widget in self.zone_affichage.winfo_children():
+            widget.destroy()
+
+        contenu = creer_scrollbar(self.zone_affichage, bg=FOND_FENETRE)
+        Label(contenu, text="Réservations d’un client :", font=("Arial", 14),
+            bg=FOND_FENETRE, fg=TEXTE_TITRE).pack(pady=(0, 10))
+
+        form = Frame(contenu, bg=FOND_FENETRE)
+        form.pack(pady=5)
+
+        email_entry = Entry(form, bg=ZONE_SAISIE)
+        Label(form, text="Email :", bg=FOND_FENETRE).grid(row=0, column=0, sticky="w")
+        email_entry.grid(row=0, column=1)
+
+        def valider():
+            email = email_entry.get().strip().lower()
+            if not email:
+                Label(contenu, text="Veuillez entrer une adresse e-mail.", fg="red", bg=FOND_FENETRE).pack()
+                return
+
+            reservations = [
+                r for r in charger_donnees().get("reservations", [])
+                if r.get("email", "").lower() == email
+            ]
+
+            Label(contenu, text="Réservations :", font=("Arial", 13), bg=FOND_FENETRE).pack(pady=10)
+            if not reservations:
+                Label(contenu, text="Aucune réservation trouvée.", bg=FOND_FENETRE).pack()
+            else:
+                for r in reservations:
+                    texte = (
+                        f"• Salle : {r['salle']} | "
+                        f"Début : {r['debut']} | \n"
+                        f"Durée : {r['duree_minutes']} min | "
+                        f"Nombre de personnes : {r['nb_personnes']}"
+                    )
+                    Label(contenu, text=texte, font=("Arial", 11), anchor="w", bg=FOND_FENETRE).pack(fill="x", padx=10, pady=2)
+
+        Bouton(form, "Valider", valider).grid(row=1, column=1, pady=10, sticky="e")
