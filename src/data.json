@@ -57,6 +57,81 @@
             "nom": "Athena",
             "type": "conf\u00e9rence",
             "capacite": 8
-        }
+        },
+        {
+        "nom": "Hermès",
+        "type": "classique",
+        "capacite": 2
+    },
+    {
+        "nom": "Arès",
+        "type": "classique",
+        "capacite": 4
+    },
+    {
+        "nom": "Hestia",
+        "type": "classique",
+        "capacite": 3
+    },
+    {
+        "nom": "Eros",
+        "type": "classique",
+        "capacite": 1
+    },
+    {
+        "nom": "Gaïa",
+        "type": "classique",
+        "capacite": 4
+    },
+    {
+        "nom": "Hypnos",
+        "type": "informatique",
+        "capacite": 3
+    },
+    {
+        "nom": "Chronos",
+        "type": "informatique",
+        "capacite": 2
+    },
+    {
+        "nom": "Nyx",
+        "type": "informatique",
+        "capacite": 4
+    },
+    {
+        "nom": "Thanatos",
+        "type": "informatique",
+        "capacite": 1
+    },
+    {
+        "nom": "Morphee",
+        "type": "informatique",
+        "capacite": 3
+    },
+    {
+        "nom": "Héra",
+        "type": "conférence",
+        "capacite": 6
+    },
+    {
+        "nom": "Dionysos",
+        "type": "conférence",
+        "capacite": 8
+    },
+    {
+        "nom": "Poséidon",
+        "type": "conférence",
+        "capacite": 10
+    },
+    {
+        "nom": "Déméter",
+        "type": "conférence",
+        "capacite": 7
+    },
+    {
+        "nom": "Artémis",
+        "type": "conférence",
+        "capacite": 9
+    }
     ]
 }

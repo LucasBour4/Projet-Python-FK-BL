@@ -13,6 +13,8 @@ et de gérer les réservations de salles.
 from tkinter import *
 from tkinter.ttk import Combobox
 from gestion_base_donnees import *
+from datetime import datetime, timedelta as dt_timedelta
+import uuid
 
 # Variables de style
 FOND_FENETRE = "#F0FFF0"
@@ -38,6 +40,36 @@ class Bouton(Button):
         super().__init__(master, text=texte, command=commande,
                          background=couleur_fond, fg=couleur_texte, font=police)
         self.config(width=largeur, height=2)
+
+
+def creer_scrollbar(parent, bg=None, height=400):
+    """Crée une zone scrollable verticale avec un Canvas.
+
+    Retourne (canvas, frame_contenu) à utiliser pour y placer les widgets.
+    """
+    container = Frame(parent, bg=bg)
+    container.pack(fill="both", expand=True)
+
+    canvas = Canvas(container, bg=bg, highlightthickness=0, height=height)
+    scrollbar = Scrollbar(container, orient="vertical", command=canvas.yview)
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    scrollbar.pack(side="right", fill="y")
+    canvas.pack(side="left", fill="both", expand=True)
+
+    frame_contenu = Frame(canvas, bg=bg)
+    canvas.create_window((0, 0), window=frame_contenu, anchor="nw")
+
+    def ajuster_scroll(event):
+        canvas.configure(scrollregion=canvas.bbox("all"))
+
+    frame_contenu.bind("<Configure>", ajuster_scroll)
+
+    # Option : molette de souris
+    canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(
+        int(-1*(e.delta/120)), "units"))
+
+    return frame_contenu
 
 
 class Application(Tk):
@@ -103,16 +135,16 @@ class PageAccueil(Frame):
         super().__init__(parent, bg=FOND_FENETRE)
         Label(self, text="Bienvenue sur MeetingPro !", font=(
             "Arial", 14), fg=TEXTE_TITRE, bg=FOND_FENETRE).pack(pady=20)
-        
+
         Label(self, text=(
             "MeetingPro est une application Python qui permet la gestion des réservations "
             "de salles de \nréunion à travers une interface graphique.\n\n"
             "Elle prend en charge la création de salles, l’enregistrement des utilisateurs, "
-            "et la réservation d’horaires précis,\navec une sauvegarde des données en JSON.\n\n\n\n" \
-            "Vous trouverez à gauche un menu de navigation pour accéder aux différentes fonctionnalités\nde l'application tel que:\n" \
-            "   - Ajoute de salle ou client: qui permet d'ajouter de nouveaux clients ou de nouvelles salles\n" \
+            "et la réservation d’horaires précis,\navec une sauvegarde des données en JSON.\n\n\n\n"
+            "Vous trouverez à gauche un menu de navigation pour accéder aux différentes fonctionnalités\nde l'application tel que:\n"
+            "   - Ajoute de salle ou client: qui permet d'ajouter de nouveaux clients ou de nouvelles salles\n"
             "   - Réserver une salle: qui permet comme son nom l'indique de réserver une salle de réunion\n"
-            "   - Afficher: qui permet d'afficher les listes des clients enregistrées, des salles existantes ainsi \n     que des réservations." \
+            "   - Afficher: qui permet d'afficher les listes des clients enregistrées, des salles existantes ainsi \n     que des réservations."
         ),
             wraplength=700,
             justify="left",
@@ -267,6 +299,132 @@ class Reserver_salle(Frame):
         Label(self, text="Réservation de salle", font=(
             "Arial", 14), bg=FOND_FENETRE).pack(pady=20)
 
+        form = Frame(self, bg=FOND_FENETRE)
+        form.pack(pady=10)
+
+        # Adresse mail client
+        Label(form, text="Votre adresse mail :", bg=FOND_FENETRE).grid(
+            row=0, column=0, sticky="w", padx=10, pady=5)
+        self.email_entry = Entry(form, bg=ZONE_SAISIE)
+        self.email_entry.grid(row=0, column=1, sticky="w", padx=10, pady=5)
+
+        # Type de salle (Combobox)
+        Label(form, text="Type de salle :", bg=FOND_FENETRE).grid(
+            row=1, column=0, sticky="w", padx=10, pady=5)
+        self.type_salle_var = StringVar()
+        self.type_salle_cb = Combobox(form, textvariable=self.type_salle_var, state="readonly",
+                                      values=["classique", "conférence", "informatique"])
+        self.type_salle_cb.grid(row=1, column=1, sticky="w", padx=10, pady=5)
+        self.type_salle_cb.current(0)
+
+        # Nombre de personnes (Combobox de 1 à 10)
+        Label(form, text="Nombre de personnes :", bg=FOND_FENETRE).grid(
+            row=2, column=0, sticky="w", padx=10, pady=5)
+        self.nb_personnes_var = StringVar()
+        self.nb_personnes_cb = Combobox(form, textvariable=self.nb_personnes_var, state="readonly",
+                                        values=[str(i) for i in range(1, 11)])
+        self.nb_personnes_cb.grid(row=2, column=1, sticky="w", padx=10, pady=5)
+        self.nb_personnes_cb.current(0)
+
+        # Jour
+        Label(form, text="Jour (YYYY-MM-DD) :", bg=FOND_FENETRE).grid(row=3,
+                                                                      column=0, sticky="w", padx=10, pady=5)
+        self.jour_entry = Entry(form, bg=ZONE_SAISIE)
+        self.jour_entry.grid(row=3, column=1, sticky="w", padx=10, pady=5)
+
+        # Heure de début
+        Label(form, text="Heure de début (HH:MM) :", bg=FOND_FENETRE).grid(
+            row=4, column=0, sticky="w", padx=10, pady=5)
+        self.heure_debut_entry = Entry(form, bg=ZONE_SAISIE)
+        self.heure_debut_entry.grid(
+            row=4, column=1, sticky="w", padx=10, pady=5)
+
+        # Durée
+        Label(form, text="Durée (HH:MM) :", bg=FOND_FENETRE).grid(
+            row=5, column=0, sticky="w", padx=10, pady=5)
+        self.duree_entry = Entry(form, bg=ZONE_SAISIE)
+        self.duree_entry.grid(row=5, column=1, sticky="w", padx=10, pady=5)
+
+        # Bouton valider
+        Bouton(self, "Valider la réservation",
+               self.valider_reservation).pack(pady=10)
+
+    def valider_reservation(self) -> None:
+        email = self.email_entry.get().strip()
+        type_salle = self.type_salle_var.get()
+        nb_personnes_str = self.nb_personnes_var.get()
+        jour = self.jour_entry.get().strip()
+        heure_debut = self.heure_debut_entry.get().strip()
+        duree = self.duree_entry.get().strip()
+
+        if not all([email, type_salle, nb_personnes_str, jour, heure_debut, duree]):
+            afficher_message_temporaire("Veuillez remplir tous les champs.")
+            return
+
+        try:
+            nb_personnes = int(nb_personnes_str)
+        except ValueError:
+            afficher_message_temporaire("Nombre de personnes invalide.")
+            return
+
+        try:
+            # Compose datetime de début à partir de jour + heure_debut (ex : "2023-06-01T18:30")
+            debut = datetime.fromisoformat(f"{jour}T{heure_debut}")
+
+            # Convertir durée HH:MM en timedelta
+            heures, minutes = map(int, duree.split(":"))
+            duree_timedelta = dt_timedelta(hours=heures, minutes=minutes)
+
+            donnees = charger_donnees()
+            salles = donnees.get("salles", [])
+
+            # Recherche salle correspondant au type et capacité >= nb_personnes
+            salle_choisie = None
+            for salle in salles:
+                if salle["type"] == type_salle and salle["capacite"] >= nb_personnes:
+                    salle_choisie = salle
+                    break
+
+            if not salle_choisie:
+                afficher_message_temporaire(
+                    "Aucune salle disponible correspondant au type et capacité demandés.")
+                return
+
+            # Vérifier que le client existe
+            utilisateurs = donnees.get("utilisateurs", [])
+            client_trouve = any(u["email"] == email for u in utilisateurs)
+            if not client_trouve:
+                afficher_message_temporaire("Adresse mail client non trouvée.")
+                return
+
+            reservation = {
+                "id": str(uuid.uuid4()),
+                "email": email,
+                "salle": salle_choisie["nom"],
+                "debut": debut,
+                "duree_minutes": int(duree_timedelta.total_seconds() / 60),
+                "nb_personnes": nb_personnes,
+            }
+
+            ajouter_reservation(reservation)
+
+            # Résumé des informations de réservation
+            resume = (
+                f"Réservation confirmée:\n"
+                f"- Email : {email}\n"
+                f"- Salle : {salle_choisie['nom']} (Type : {type_salle})\n"
+                f"- Date et heure : {debut.strftime('%d/%m/%Y à %H:%M')}\n"
+                f"- Durée : {duree} (HH:MM)\n"
+                f"- Nombre de personnes : {nb_personnes}"
+            )
+            afficher_message_temporaire(resume)
+
+        except ValueError:
+            afficher_message_temporaire("Format de date ou heure invalide.")
+        except Exception as e:
+            afficher_message_temporaire(
+                f"Erreur lors de la réservation : {str(e)}")
+
 
 class Afficher(Frame):
     """Page permettant d'afficher les salles, les clients ou les réservations."""
@@ -304,32 +462,13 @@ class Afficher(Frame):
         for widget in self.zone_affichage.winfo_children():
             widget.destroy()
 
-        # Chargement des données
         salles = charger_donnees().get("salles", [])
 
-        # Création du canvas avec scrollbar
-        canvas = Canvas(self.zone_affichage, bg=FOND_FENETRE,
-                        highlightthickness=0)
-        scrollbar = Scrollbar(self.zone_affichage,
-                              orient="vertical", command=canvas.yview)
-        canvas.configure(yscrollcommand=scrollbar.set)
+        contenu = creer_scrollbar(self.zone_affichage, bg=FOND_FENETRE)
 
-        scrollbar.pack(side="right", fill="y")
-        canvas.pack(side="left", fill="both", expand=True)
-
-        contenu = Frame(canvas, bg=FOND_FENETRE)
-        canvas.create_window((0, 0), window=contenu, anchor="nw")
-
-        def ajuster_scroll(event):
-            canvas.configure(scrollregion=canvas.bbox("all"))
-
-        contenu.bind("<Configure>", ajuster_scroll)
-
-        # Titre
         Label(contenu, text="Liste des salles existantes :", font=(
             "Arial", 14), bg=FOND_FENETRE, fg=TEXTE_TITRE).pack(pady=(0, 10))
 
-        # Liste des salles
         if not salles:
             Label(contenu, text="Aucune salle enregistrée.", font=(
                 "Arial", 12), bg=FOND_FENETRE).pack(pady=10)
@@ -351,41 +490,28 @@ class Afficher(Frame):
         for widget in self.zone_affichage.winfo_children():
             widget.destroy()
 
-        # Chargement des données
         clients = charger_donnees().get("utilisateurs", [])
 
-        # Création du canvas avec scrollbar
-        canvas = Canvas(self.zone_affichage, bg=FOND_FENETRE,
-                        highlightthickness=0)
-        scrollbar = Scrollbar(self.zone_affichage,
-                              orient="vertical", command=canvas.yview)
-        canvas.configure(yscrollcommand=scrollbar.set)
+        contenu = creer_scrollbar(self.zone_affichage, bg=FOND_FENETRE)
 
-        scrollbar.pack(side="right", fill="y")
-        canvas.pack(side="left", fill="both", expand=True)
-
-        contenu = Frame(canvas, bg=FOND_FENETRE)
-        canvas.create_window((0, 0), window=contenu, anchor="nw")
-
-        def ajuster_scroll(event):
-            canvas.configure(scrollregion=canvas.bbox("all"))
-
-        contenu.bind("<Configure>", ajuster_scroll)
-
-        # Titre
         Label(contenu, text="Liste des clients enregistrés :", font=(
             "Arial", 14), bg=FOND_FENETRE, fg=TEXTE_TITRE).pack(pady=(0, 10))
 
-        # Liste des clients
         if not clients:
             Label(contenu, text="Aucun client enregistré.", font=(
                 "Arial", 12), bg=FOND_FENETRE).pack(pady=10)
         else:
             for c in clients:
-                nom, prenom, email = c.get("nom", "Inconnu"), c.get(
-                    "prenom", ""), c.get("email", "")
-                Label(contenu, text=f"• {prenom} {nom} — Email : {email}", font=(
-                    "Arial", 11), anchor="w", bg=FOND_FENETRE).pack(fill="x", padx=10, pady=5)
+                nom = c.get("nom", "Inconnu")
+                prenom = c.get("prenom", "")
+                email = c.get("email", "")
+                Label(
+                    contenu,
+                    text=f"• {prenom} {nom} — Email : {email}",
+                    font=("Arial", 11),
+                    anchor="w",
+                    bg=FOND_FENETRE
+                ).pack(fill="x", padx=10, pady=5)
 
     def afficher_salles_disponibles(self) -> None:
         """Affiche les salles disponibles pour un créneau"""
@@ -394,8 +520,3 @@ class Afficher(Frame):
     def afficher_reservations_client(self) -> None:
         """Affiche les réservations d’un client donné."""
         pass
-
-
-if __name__ == "__main__":
-    app = Application()
-    app.mainloop()
