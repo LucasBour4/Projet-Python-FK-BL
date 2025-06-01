@@ -13,7 +13,7 @@ Fonctionnalités principales :
 -----------------------------
 - Ajouter des utilisateurs (clients)
 - Ajouter des salles avec leur type et capacité
-- Réserver une salle selon une salle, un nombre de personnes, une date et heure de début et  une durée
+- Réserver une salle selon un client, une salle, un nombre de personnes, une date et heure de début et  une durée
 - Visualiser les utilisateurs, salles, et réservations enregistrées
 
 Format de données :
@@ -38,10 +38,13 @@ Toutes les données sont stockées dans le fichier `data.json` :
   ],
   "reservations": [
     {
-      "id_utilisateur": "UUID",
+      "id_reservation": "06e57574-0146-497e-97f4-cac4235a6226",
+      "email_utilisateur": "paul.rostoucher@mail.com",
       "nom_salle": "Salle 1",
       "debut": "2024-06-01T09:00:00",
-      "duree": 60
+      "duree_minute": 60
+      "nombre_personnes": 4,
+      "id": str(uuid.uuid4()),
     }
   ]
 }
@@ -50,7 +53,8 @@ Utilisation :
 -------------
 - Lancer `main.py`
 - Ajouter des utilisateurs et des salles depuis l’interface
-- Réaliser des réservations en choisissant l’utilisateur, la salle et les horaires
+- Réaliser des réservations en choisissant l’utilisateur, le jour, la durée, le nombre de personnes, le type de salle
+
 
 Pré-requis :
 ------------
